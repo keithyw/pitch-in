@@ -49,9 +49,6 @@ func (h *UserHandler) FindBy(w http.ResponseWriter, req *http.Request) {
 		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed finding users %s", err.Error()))
 		return
 	}
-	if users == nil {
-		users = []User{}
-	}
 	response.JSON(w, http.StatusOK, users)
 }
 
