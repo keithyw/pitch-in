@@ -41,23 +41,30 @@ func (p *Parser) getFieldsFor(model interface{}) fieldsMap {
 	fields := make(map[string]string)
 
 	v := reflect.ValueOf(model)
-	for i := 0; i < v.NumField(); i++ {
-		var jsonFieldName string
-		jsonField := v.Type().Field(i).Tag.Get("json")
+	t := v.Type()
 
-		// this field may have additional info like omitempty so we check for the comma
-		if strings.Contains(jsonField, ",") {
-			jsonFieldName = strings.Split(jsonField, ",")[0]
-		} else {
-			jsonFieldName = jsonField
-		}
-		fields[jsonFieldName] = v.Type().Field(i).Tag.Get("db")
-
-		// if the db tag is empty, we use the json field name
-		if fields[jsonFieldName] == "" {
-			fields[jsonFieldName] = jsonFieldName
+	var extractFields func(reflect.Type)
+	extractFields = func(st reflect.Type) {	
+		for i := 0; i < v.NumField(); i++ {
+			field := st.Field(i)
+			if field.Anonymous && field.Type.Kind() == reflect.Struct {
+				extractFields(field.Type)
+				continue
+			}
+			jsonTag := field.Tag.Get("json")
+			if jsonTag == "" || jsonTag == "-" {
+				continue
+			}
+			jsonFieldName := strings.Split(jsonTag, ",")[0]
+			dbTag := field.Tag.Get("db")
+			if dbTag == "" {
+				dbTag = jsonFieldName
+			}
+			fields[jsonFieldName] = dbTag
 		}
 	}
+
+	extractFields(t)
 	return fields
 }
 

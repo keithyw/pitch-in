@@ -97,7 +97,7 @@ func (s *dbStoreImpl) Update(m model.Model, data map[string]interface{}, result 
 	if err != nil {
 		return err
 	}
-	return nil
+	return s.Get(m, result)
 }
 
 func (s *dbStoreImpl) MakeQueryFromFilter(filter repository.Filter, q sq.SelectBuilder) sq.SelectBuilder {
