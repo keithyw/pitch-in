@@ -33,6 +33,10 @@ func (u *User) Columns() []string{
 	return []string{"id", "username", "email", "first_name", "last_name", "is_active", "created_at", "updated_at", "deleted_at"}
 }
 
+func (u *User) IsAutoIncrementKey() bool {
+	return true
+}
+
 func (u *User) PrimaryKey() (string, interface{}) {
 	return "id", u.ID
 }

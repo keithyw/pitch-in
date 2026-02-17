@@ -10,6 +10,7 @@ type UserRepository interface {
 	DeleteUser(userId int64) error
 	FindUsersBy(filter repository.Filter) ([]User, error)
 	GetUser(userId int64) (*User, error)
+	GetUserByEmail (email string) (*User, error)
 	UpdateUser(user User) (*User, error)
 }
 
@@ -45,6 +46,15 @@ func (r *UserRepositoryImpl) FindUsersBy(filter repository.Filter) ([]User, erro
 func (r *UserRepositoryImpl) GetUser(userId int64) (*User, error) {
 	var user User
 	err := r.store.Get(&User{ID: userId}, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (r *UserRepositoryImpl) GetUserByEmail(email string) (*User, error) {
+	var user User
+	err := r.store.GetBy(&User{}, "email", email, &user)
 	if err != nil {
 		return nil, err
 	}

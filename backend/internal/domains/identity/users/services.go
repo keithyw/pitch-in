@@ -12,6 +12,7 @@ type UserService interface {
 	DeleteUser(userId int64) error
 	FindUserBy(filter repository.Filter) ([]User, error)
 	GetUser(userId int64) (*User, error)
+	GetUserByEmail(email string) (*User, error)
 	UpdateUser(user User) (*User, error)
 }
 
@@ -59,6 +60,15 @@ func (s *userServiceImpl) GetUser(userId int64) (*User, error) {
 	if err != nil {
 		s.log.Error("Failed getting user", "userId", userId, "error", err)
 		return nil, fmt.Errorf("Get user error: %w", err)
+	}
+	return user, nil
+}
+
+func (s *userServiceImpl) GetUserByEmail(email string) (*User, error) {
+	user, err := s.repository.GetUserByEmail(email)
+	if err != nil {
+		s.log.Error("Failed getting user by email", "email", email, "error", err)
+		return nil, fmt.Errorf("Get user by email error: %w", err)
 	}
 	return user, nil
 }

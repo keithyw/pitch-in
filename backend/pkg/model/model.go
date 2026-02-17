@@ -5,6 +5,7 @@ import "reflect"
 type Model interface {
 	TableName() string
 	Columns() []string
+	IsAutoIncrementKey() bool
 	PrimaryKey() (column string, value interface{})
 	SetID(id int64)
 	ToMap() map[string]interface{}

@@ -6,9 +6,14 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/keithyw/pitch-in/pkg/response"
+	"github.com/keithyw/pitch-in/pkg/validation"
 )
 
 var validate = validator.New()
+
+func init() {
+	validate.RegisterValidation("password_complex", validation.CheckPassword)
+}
 
 func DecodeAndValidate[T any](next func(http.ResponseWriter, *http.Request, T)) http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request) {

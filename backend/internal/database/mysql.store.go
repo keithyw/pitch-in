@@ -14,6 +14,7 @@ type DBStore interface {
 	Delete(m model.Model) error
 	FindBy(m model.Model, filter repository.Filter, result interface{}) error
 	Get(m model.Model, result interface{}) error
+	GetBy(m model.Model, key string, value any, result interface{}) error
 	GetClient() DBClient
 	Select(m model.Model) sq.SelectBuilder
 	Update(m model.Model, data map[string]interface{}, result interface{}) error
@@ -40,11 +41,13 @@ func (s *dbStoreImpl) Create(m model.Model, data map[string]interface{}, result 
 	if err != nil {
 		return err
 	}
-	id, err := r.LastInsertId()
-	if err != nil {
-		return err
+	if m.IsAutoIncrementKey() {
+		id, err := r.LastInsertId()
+		if err != nil {
+			return err
+		}
+		m.SetID(id)
 	}
-	m.SetID(id)
 	return s.Get(m, result)
 }
 
@@ -72,7 +75,14 @@ func (s *dbStoreImpl) Get(m model.Model, result interface{}) error {
 		Where(sq.Eq{key: val}).
 		Limit(1)
 	return s.GetClient().Get(s.ctx, q, result)
+}
 
+func (s *dbStoreImpl) GetBy(m model.Model, key string, value any, result interface{}) error {
+	q := s.Select(m).
+		From(m.TableName()).
+		Where(sq.Eq{key: value}).
+		Limit(1)
+	return s.GetClient().Get(s.ctx, q, result)
 }
 
 func (s *dbStoreImpl) GetClient() DBClient {
@@ -85,7 +95,6 @@ func(s *dbStoreImpl) Select(m model.Model) sq.SelectBuilder {
 		cols = []string{"*"}
 	}
 	return sq.Select(cols...)
-	// return s.Select(m, cols...).From(m.TableName())
 }
 
 func (s *dbStoreImpl) Update(m model.Model, data map[string]interface{}, result interface{}) error {
