@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/keithyw/pitch-in/pkg/jwt"
 	"github.com/keithyw/pitch-in/pkg/middleware"
 )
 
-func NewUserRouter(h *UserHandler) http.Handler {
+func NewUserRouter(jwtService *jwt.JWTService, h *UserHandler) http.Handler {
 	r := chi.NewRouter()
+	r.Use(middleware.AuthMiddleware(jwtService))
 	r.Delete("/{userID}", h.Delete)
 	r.Get("/{userID}", h.Get)
 	r.Get("/", h.FindBy)

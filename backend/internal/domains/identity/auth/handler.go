@@ -6,17 +6,24 @@ import (
 	"net/http"
 
 	"github.com/keithyw/pitch-in/internal/domains/identity/users"
+	"github.com/keithyw/pitch-in/pkg/jwt"
 	"github.com/keithyw/pitch-in/pkg/response"
 )
 
 type AuthHandler struct {
 	svc AuthService
+	jwt *jwt.JWTService
 	log *slog.Logger
 }
 
 type LoginRequest struct {
 	Email string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=8,max=72"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+	User *users.User `json:"user"`
 }
 
 type RegisterRequest struct {
@@ -28,9 +35,10 @@ type RegisterRequest struct {
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
 
-func NewAuthHandler(svc AuthService, log *slog.Logger) *AuthHandler {
+func NewAuthHandler(svc AuthService, jwt *jwt.JWTService, log *slog.Logger) *AuthHandler {
 	return &AuthHandler{
 		svc: svc,
+		jwt: jwt,
 		log: log,
 	}
 }
@@ -42,7 +50,16 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request, req LoginReq
 		return
 	}
 
-	response.JSON(w, http.StatusOK, user)
+	token, err := h.jwt.CreateJWT(user.ID, *user.Username)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Could not generate JWT: %s", err.Error()))
+		return
+	}
+
+	response.JSON(w, http.StatusOK, LoginResponse{
+		Token: token,
+		User: user,
+	})
 }
 
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request, req RegisterRequest) {
@@ -55,7 +72,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request, req Regis
 		},
 	}
 
-	newUser, err := h.svc.Register(u, req.Password)
+	newUser, err := h.svc.Register(u, req.Password)	
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Registration failed: %s", err.Error()))
 		return

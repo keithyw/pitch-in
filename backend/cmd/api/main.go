@@ -21,7 +21,7 @@ func main() {
 	}
 
 	store := database.NewDBStore(ctx, client)
-	server := server.NewServer(store, log)
+	server := server.NewServer(config, store, log)
 	log.Info(fmt.Sprintf("Server starting on %s", config.HttpPort))
 	http.ListenAndServe(config.HttpPort, server)
 }
