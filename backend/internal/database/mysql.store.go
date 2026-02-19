@@ -116,8 +116,7 @@ func (s *dbStoreImpl) MakeQueryFromFilter(filter repository.Filter, q sq.SelectB
 				continue
 			}
 
-			if filter.Operators != nil {
-				op := filter.Operators[k]
+			if op, ok := filter.Operators[k]; ok && op != "" {
 				switch op {
 				case "<=":
 					q = q.Where(sq.LtOrEq{k: v})
@@ -130,15 +129,18 @@ func (s *dbStoreImpl) MakeQueryFromFilter(filter repository.Filter, q sq.SelectB
 				case "~=":
 					q = q.Where(fmt.Sprintf("MATCH (%s) AGAINST (? IN BOOLEAN MODE)", k), v)
 				case "between":
-					values := v.([]string)
-					q = q.Where(fmt.Sprintf("%s BETWEEN ? AND ?", k), values[0], values[1])
+					if vals, ok := v.([]string); ok && len(vals) == 2 {
+						q = q.Where(sq.Expr(fmt.Sprintf("%s BETWEEN ? AND ?", k), vals[0], vals[1]))
+					}
 				case "null":
 					q = q.Where(sq.Eq{k: nil})
 				case "in":
 					fallthrough
 				default:
 					q = q.Where(sq.Eq{k: v})
-				}
+				} 
+			} else {
+				q = q.Where(sq.Eq{k: v})
 			}
 		}
 	}
