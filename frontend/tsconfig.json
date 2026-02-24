@@ -1,0 +1,46 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@pitch-in/shared/*": ["shared/*"],
+			"@admin/*": ["apps/admin/src/*"],
+			"@web/*": ["apps/web/src/*"]
+		},
+		"target": "ES2017",
+		// "target": "esnext",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "node",
+		"preserveSymlinks": true,
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		// "jsx": "react-jsx",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
+	},
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		".next/dev/types/**/*.ts",
+		"**/*.mts",
+		"apps/admin/src/**/*.ts",
+		"apps/admin/src/**/*.tsx",
+		"apps/web/src/**/*.ts",
+		"apps/web/src/**/*.tsx",
+		"shared/**/*.ts"
+	],
+	"exclude": ["node_modules"]
+}

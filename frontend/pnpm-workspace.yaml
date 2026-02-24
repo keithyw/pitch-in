@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - shared
+
+onlyBuiltDependencies:
+  - msw
+  - sharp
+  - unrs-resolver

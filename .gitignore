@@ -1,5 +1,7 @@
 backend/coverage.out
 node_modules/
+.DS_Store
 .env*
 .vscode/
 db/
+.next/
