@@ -1,4 +1,4 @@
-import { captureRejectionSymbol } from 'events'
+import { cn } from '@pitch-in/shared/utils'
 
 interface ContainerProps {
 	children: React.ReactNode
@@ -13,7 +13,10 @@ export const Container = ({
 }: ContainerProps) => {
 	return (
 		<Component
-			className={`container mx-auto px-4 sm:px-6 lg:px-8 ${className}`}
+			className={cn(
+				'container mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8',
+				className,
+			)}
 		>
 			{children}
 		</Component>

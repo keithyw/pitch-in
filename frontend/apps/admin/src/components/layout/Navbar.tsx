@@ -6,10 +6,11 @@ import {
 	Navbar as SharedNavbar,
 	NavLinkItem,
 } from '@pitch-in/shared/components'
-import { DASHBOARD_URL } from '@/lib'
+import { DASHBOARD_URL, IDENTITY_URL } from '@/lib'
 
 const ADMIN_LINKS: NavLinkItem[] = [
 	{ label: 'Dashboard', href: DASHBOARD_URL, permission: '' },
+	{ label: 'Identity', href: IDENTITY_URL, permission: '' },
 ]
 
 export default function Navbar() {

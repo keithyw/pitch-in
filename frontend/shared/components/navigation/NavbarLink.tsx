@@ -26,7 +26,7 @@ export const NavbarLink = ({
 		<Link
 			href={href}
 			className={cn(
-				'hover:text-primary transition-colors',
+				'transition-colors duration-200 hover:text-gray-300',
 				className,
 				isActive && activeClassName,
 			)}
