@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
-import { Container } from '@pitch-in/shared'
 import Navbar from '@/components/layout/Navbar'
 import './globals.css'
 
@@ -31,7 +30,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<Navbar />
-				<Container as='main'>{children}</Container>
+				<div>{children}</div>
 				<Toaster position='bottom-right' />
 			</body>
 		</html>

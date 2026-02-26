@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Container } from '@pitch-in/shared/components'
+import { Container, NavbarLink } from '@pitch-in/shared/components'
 import { cn } from '@pitch-in/shared/utils'
 
 export interface NavLinkItem {
@@ -25,13 +25,13 @@ export const Navbar = ({
 }: NavbarProps) => {
 	return (
 		<nav className={cn('bg-gray-800 p-4 text-white shadow-md', className)}>
-			<Container className='flex items-center justify-between'>
-				Home
+			<div className='container mx-auto flex items-center justify-between'>
+				<NavbarLink href='/'>Home</NavbarLink>
 				<div className='flex items-center space-x-6'>
 					{links.map((l) => renderLink(l))}
+					{rightContent}
 				</div>
-				<div className='flex items-center space-x-4'>{rightContent}</div>
-			</Container>
+			</div>
 		</nav>
 	)
 }

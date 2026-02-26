@@ -12,12 +12,7 @@ export const Container = ({
 	as: Component = 'div',
 }: ContainerProps) => {
 	return (
-		<Component
-			className={cn(
-				'container mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8',
-				className,
-			)}
-		>
+		<Component className={cn('container mx-auto', className)}>
 			{children}
 		</Component>
 	)
