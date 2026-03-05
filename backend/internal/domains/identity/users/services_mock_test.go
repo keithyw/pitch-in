@@ -9,6 +9,12 @@ type MockUserService struct {
 	mock.Mock
 }
 
+func (m *MockUserService) CountUsers(filter repository.Filter) (int64, error) {
+	args := m.Called(filter)
+	if args.Get(0) == nil { return 0, args.Error(1) }
+	return args.Get(0).(int64), args.Error(1)
+}
+
 func (m *MockUserService) CreateUser(user User) (*User, error) {
 	args := m.Called(user)
 	if args.Get(0) == nil { return nil, args.Error(1) }

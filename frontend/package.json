@@ -17,13 +17,17 @@
 	"dependencies": {
 		"@headlessui/react": "^2.2.9",
 		"@heroicons/react": "^2.2.0",
+		"axios": "^1.13.6",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"install": "^0.13.0",
 		"lucide-react": "^0.575.0",
 		"next": "16.1.6",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
-		"tailwind-merge": "^3.5.0"
+		"react-hook-form": "^7.71.2",
+		"tailwind-merge": "^3.5.0",
+		"zustand": "^5.0.11"
 	},
 	"devDependencies": {
 		"@tailwindcss/postcss": "4.1.1",

@@ -6,6 +6,7 @@ import (
 )
 
 type UserRepository interface {
+	CountUsers(filter repository.Filter) (int64, error)
 	CreateUser(user User) (*User, error)
 	DeleteUser(userId int64) error
 	FindUsersBy(filter repository.Filter) ([]User, error)
@@ -22,6 +23,10 @@ func NewUserRepository(store database.DBStore) UserRepository {
 	return &UserRepositoryImpl{
 		store: store,
 	}
+}
+
+func (r *UserRepositoryImpl) CountUsers(filter repository.Filter) (int64, error) {
+	return r.store.Count(&User{}, filter)
 }
 
 func (r *UserRepositoryImpl) CreateUser(user User) (*User, error) {

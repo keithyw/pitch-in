@@ -12,6 +12,7 @@ import (
 
 type DBClient interface {
 	Get(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
+	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 	Query(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
 	QueryMany(builder squirrel.Sqlizer) (*sql.Rows, error)
 	Exec (ctx context.Context, builder squirrel.Sqlizer) (sql.Result, error)
@@ -53,6 +54,10 @@ func (s *DBClientImpl) Get(ctx context.Context, builder squirrel.Sqlizer, dest i
 		return fmt.Errorf("failed to get: %s", err.Error())
 	}
 	return nil
+}
+
+func (s *DBClientImpl) GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+	return s.DB.GetContext(ctx, dest, query, args...)
 }
 
 func (s *DBClientImpl) Query(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error {

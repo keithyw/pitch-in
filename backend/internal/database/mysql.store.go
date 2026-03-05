@@ -10,6 +10,7 @@ import (
 )
 
 type DBStore interface {
+	Count(m model.Model, filter repository.Filter) (int64, error)
 	Create(m model.Model, data map[string]interface{}, result interface{}) error
 	Delete(m model.Model) error
 	FindBy(m model.Model, filter repository.Filter, result interface{}) error
@@ -31,6 +32,28 @@ func NewDBStore(ctx context.Context, client DBClient) DBStore {
 		Client: client,
 		ctx: ctx,
 	}
+}
+
+func (s *dbStoreImpl) Count(m model.Model, filter repository.Filter) (int64, error) {
+	q := sq.Select("COUNT(*)").From(m.TableName())
+	countFilter := filter
+    countFilter.Limit = 0
+    countFilter.Offset = 0
+    countFilter.Sort = ""
+    countFilter.Order = ""
+
+	q = s.MakeQueryFromFilter(countFilter, q)
+	sql, args, err := q.PlaceholderFormat(sq.Question).ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	var count int64
+	err = s.Client.GetContext(s.ctx, &count, sql, args...)
+	if err != nil {
+		return 0, fmt.Errorf("Failed getting count: %w", err)
+	}
+	return count, nil
 }
 
 func (s *dbStoreImpl) Create(m model.Model, data map[string]interface{}, result interface{}) error {

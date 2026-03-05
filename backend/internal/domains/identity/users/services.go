@@ -8,6 +8,7 @@ import (
 )
 
 type UserService interface {
+	CountUsers(filter repository.Filter) (int64, error)
 	CreateUser(user User) (*User, error)
 	DeleteUser(userId int64) error
 	FindUserBy(filter repository.Filter) ([]User, error)
@@ -26,6 +27,15 @@ func NewUserService(repo UserRepository, log *slog.Logger) UserService {
 		repository: repo,
 		log: log,
 	}
+}
+
+func (s *userServiceImpl) CountUsers(filter repository.Filter) (int64, error) {
+	cnt, err := s.repository.CountUsers(filter)
+	if err != nil {
+		s.log.Error("Failed getting user found", "error", err)
+		return 0, fmt.Errorf("user count failure: %w", err)
+	}
+	return cnt, nil
 }
 
 func (s *userServiceImpl) CreateUser(user User) (*User, error) {

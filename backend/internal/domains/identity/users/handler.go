@@ -49,7 +49,13 @@ func (h *UserHandler) FindBy(w http.ResponseWriter, req *http.Request) {
 		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed finding users %s", err.Error()))
 		return
 	}
-	response.JSON(w, http.StatusOK, users)
+
+	count, err := h.svc.CountUsers(*filter)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed user count %s", err.Error()))
+		return
+	}
+	response.PaginatedJSON(w, http.StatusOK, count, users)
 }
 
 func (h *UserHandler) Get(w http.ResponseWriter, req *http.Request) {

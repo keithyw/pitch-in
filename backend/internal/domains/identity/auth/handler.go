@@ -18,12 +18,22 @@ type AuthHandler struct {
 
 type LoginRequest struct {
 	Email string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=8,max=72"`
+	Password string `json:"password" validate:"required,min=6,max=72"`
 }
 
 type LoginResponse struct {
 	Token string `json:"token"`
+	Refresh string `json:"refresh"`
 	User *users.User `json:"user"`
+}
+
+type RefreshRequest struct {
+	Refresh string `json:"refresh" validate:"required"`
+}
+
+type RefreshResponse struct {
+	Token string `json:"token"`
+	Refresh string `json:"refresh"`
 }
 
 type RegisterRequest struct {
@@ -31,7 +41,7 @@ type RegisterRequest struct {
 	Email string `json:"email" validate:"required,email"`
 	FirstName string `json:"first_name" validate:"required,min=2,max=255"`
 	LastName string `json:"last_name" validate:"required,min=2,max=255"`
-	Password string `json:"password" validate:"required,min=8,max=72,password_complex"`
+	Password string `json:"password" validate:"required,min=6,max=72,password_complex"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
 
@@ -56,9 +66,41 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request, req LoginReq
 		return
 	}
 
+	refreshToken, err := h.jwt.CreateRefreshJWT(user.ID, *user.Username)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Could not generate JWT Refresh: %s", err.Error()))
+		return
+	}
+
 	response.JSON(w, http.StatusOK, LoginResponse{
+		Refresh: refreshToken,
 		Token: token,
 		User: user,
+	})
+}
+
+func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request, req RefreshRequest) {
+	claims, err := h.jwt.ParseJWT(req.Refresh)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusUnauthorized, "Invalid refresh token")
+		return
+	}
+
+	token, err := h.jwt.CreateJWT(claims.UserID, claims.Username)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, "Failed to generate token")
+		return
+	}
+
+	refresh, err := h.jwt.CreateRefreshJWT(claims.UserID, claims.Username)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, "Failed to generate refresh token")
+		return
+	}
+
+	response.JSON(w, http.StatusOK, RefreshResponse{
+		Token: token,
+		Refresh: refresh,
 	})
 }
 

@@ -17,6 +17,11 @@ func (m *MockDBClient) Get(ctx context.Context, builder squirrel.Sqlizer, dest i
 	return args.Error(0)
 }
 
+func (m *MockDBClient) GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+	a := m.Called(ctx, dest, query, args)
+	return a.Error(0)
+}
+
 func (m *MockDBClient) Query(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error {
 	args := m.Called(ctx, builder, dest)
 	return args.Error(0)

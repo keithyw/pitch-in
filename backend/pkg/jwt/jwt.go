@@ -43,6 +43,21 @@ func (s *JWTService) CreateJWT(userID int64, username string) (string, error) {
 	return token.SignedString(s.secret)
 }
 
+func (s *JWTService) CreateRefreshJWT(userID int64, username string) (string, error) {
+	s.log.Info(fmt.Sprintf("secret info: %s", s.secret))
+	claims:= &JWTClaim{
+		UserID: userID,
+		Username: username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
+			IssuedAt: jwt.NewNumericDate(time.Now()),
+			Subject: fmt.Sprintf("%d", userID),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(s.secret)
+}
+
 func (s *JWTService) ParseJWT(tokenString string) (*JWTClaim, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &JWTClaim{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.secret), nil

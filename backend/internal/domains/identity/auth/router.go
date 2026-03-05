@@ -10,6 +10,7 @@ import (
 func NewAuthRouter(h *AuthHandler) http.Handler {
 	r := chi.NewRouter()
 	r.Post("/login", middleware.DecodeAndValidate(h.Login))
+	r.Post("/refresh", middleware.DecodeAndValidate(h.Refresh))
 	r.Post("/register", middleware.DecodeAndValidate(h.Register))
 	return r
 }
