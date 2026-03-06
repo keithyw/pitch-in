@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { RefreshResponse, User } from '@pitch-in/shared/types'
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib'
 
 const USER_DATA_KEY = 'user_data'
 
@@ -24,13 +25,19 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 			refreshToken: res.refresh,
 			isAuthenticated: true,
 		})
+		localStorage.setItem(ACCESS_TOKEN_KEY, res.token)
+		localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh)
 	},
 	setLogoutStatus: () => {
 		set({
 			accessToken: '',
 			refreshToken: '',
 			isAuthenticated: false,
+			user: null,
 		})
+		localStorage.removeItem(ACCESS_TOKEN_KEY)
+		localStorage.removeItem(REFRESH_TOKEN_KEY)
+		localStorage.removeItem(USER_DATA_KEY)
 	},
 	setUser: (user: User) => {
 		set({ user })
