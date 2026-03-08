@@ -1,12 +1,14 @@
 'use client'
 
 import { useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { CreateItemSection, PageTitle } from '@pitch-in/shared/components'
 import { DataTable } from '@pitch-in/shared/components/ui/table'
 import { DEFAULT_PAGE_SIZE } from '@pitch-in/shared/constants'
 import { useDataTableController } from '@pitch-in/shared/hooks'
 import { TableColumn, TableRowAction, User } from '@pitch-in/shared/types'
 import { UserAPI } from '@/lib/clients/api'
+import { CREATE_USERS_URL, USERS_URL } from '@/lib'
 
 const USER_COLUMNS: TableColumn<User>[] = [
 	{
@@ -22,6 +24,8 @@ const USER_COLUMNS: TableColumn<User>[] = [
 ]
 
 const UsersPage = () => {
+	const router = useRouter()
+
 	const {
 		data: users,
 		isLoading,
@@ -43,10 +47,22 @@ const UsersPage = () => {
 	})
 
 	const userColumns = useMemo(() => USER_COLUMNS, [])
+
+	const actions: TableRowAction<User>[] = [
+		{
+			label: 'Details',
+			onClick: (u) => {
+				router.push(`${USERS_URL}/${u.id}`)
+			},
+			actionType: 'view',
+			requiredPermission: '',
+		},
+	]
+
 	return (
 		<>
 			<PageTitle>Users</PageTitle>
-			<CreateItemSection permission='' href=''>
+			<CreateItemSection permission='' href={CREATE_USERS_URL}>
 				Create New User
 			</CreateItemSection>
 
@@ -54,6 +70,7 @@ const UsersPage = () => {
 				data={users}
 				columns={userColumns}
 				rowKey='id'
+				actions={actions}
 				searchTerm={searchTerm}
 				onSearch={handleSearch}
 				currentPage={currentPage}

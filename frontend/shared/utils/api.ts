@@ -8,7 +8,7 @@ export const prepareQueryParams = (
 	// 1. Map base pagination and search
 	const query: Record<string, any> = {
 		limit: pageSize,
-		offset: page,
+		offset: (page as number) - 1,
 		sort: ordering
 			? ordering.startsWith('-')
 				? `${ordering.slice(1)}.desc`

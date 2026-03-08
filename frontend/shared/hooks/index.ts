@@ -1,2 +1,5 @@
+export * from './useCreateRecord'
 export * from './useDataTableController'
+export * from './useDetailsController'
+export * from './useEditRecord'
 export * from './usePermissions'
