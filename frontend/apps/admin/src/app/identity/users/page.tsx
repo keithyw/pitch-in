@@ -33,6 +33,16 @@ const USER_COLUMNS: TableColumn<User>[] = [
 		accessor: 'username',
 		sortable: true,
 	},
+	{
+		header: 'Full Name',
+		render: (u: User) => `${u.first_name} ${u.last_name}`,
+		sortable: true,
+		sortField: 'last_name',
+	},
+	{
+		header: 'Is Active',
+		render: (u: User) => `${u.is_active ? 'Yes' : 'No'}`,
+	},
 ]
 
 const UsersPage = () => {
