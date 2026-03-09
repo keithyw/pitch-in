@@ -20,7 +20,7 @@ export const CancelSubmitButton = ({
 	}
 
 	return (
-		<Button actionType='danger' onClick={handleCancel} {...props}>
+		<Button actionType='danger' type='button' onClick={handleCancel} {...props}>
 			Cancel
 		</Button>
 	)

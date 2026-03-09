@@ -1,10 +1,22 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
-import { CreateItemSection, PageTitle } from '@pitch-in/shared/components'
+import {
+	ConfirmationModal,
+	CreateItemSection,
+	PageTitle,
+	PermissionGuard,
+} from '@pitch-in/shared/components'
 import { DataTable } from '@pitch-in/shared/components/ui/table'
-import { DEFAULT_PAGE_SIZE } from '@pitch-in/shared/constants'
+import {
+	DEFAULT_PAGE_SIZE,
+	MODAL_CONFIRMATION_BUTTON_DELETING_STYLE,
+	MODAL_CONFIRMATION_BUTTON_STYLE,
+	MODAL_CANCEL_BUTTON_STYLE,
+	MODAL_CANCEL_DELETING_STYLE,
+} from '@pitch-in/shared/constants'
 import { useDataTableController } from '@pitch-in/shared/hooks'
 import { TableColumn, TableRowAction, User } from '@pitch-in/shared/types'
 import { UserAPI } from '@/lib/clients/api'
@@ -25,6 +37,9 @@ const USER_COLUMNS: TableColumn<User>[] = [
 
 const UsersPage = () => {
 	const router = useRouter()
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [deleteUser, setDeleteUser] = useState<User | null>(null)
+	const [isDeleting, setIsDeleting] = useState(false)
 
 	const {
 		data: users,
@@ -48,6 +63,31 @@ const UsersPage = () => {
 
 	const userColumns = useMemo(() => USER_COLUMNS, [])
 
+	const openModal = (user: User) => {
+		setDeleteUser(user)
+		setIsModalOpen(true)
+	}
+
+	const closeModal = () => {
+		setIsModalOpen(false)
+		setDeleteUser(null)
+	}
+
+	const handleDelete = async () => {
+		if (deleteUser) {
+			setIsDeleting(true)
+			try {
+				await UserAPI.delete(deleteUser.id)
+				toast.success(`User ${deleteUser.username} has been deleted`)
+				loadData()
+				closeModal()
+			} catch (e: unknown) {
+			} finally {
+				setIsDeleting(false)
+			}
+		}
+	}
+
 	const actions: TableRowAction<User>[] = [
 		{
 			label: 'Details',
@@ -57,10 +97,24 @@ const UsersPage = () => {
 			actionType: 'view',
 			requiredPermission: '',
 		},
+		{
+			label: 'Edit',
+			onClick: (u) => {
+				router.push(`${USERS_URL}/${u.id}/edit`)
+			},
+			actionType: 'edit',
+			requiredPermission: '',
+		},
+		{
+			label: 'Delete',
+			onClick: openModal,
+			actionType: 'delete',
+			requiredPermission: '',
+		},
 	]
 
 	return (
-		<>
+		<PermissionGuard requiredPermission=''>
 			<PageTitle>Users</PageTitle>
 			<CreateItemSection permission='' href={CREATE_USERS_URL}>
 				Create New User
@@ -83,7 +137,23 @@ const UsersPage = () => {
 				currentSortDirection={sortDirection}
 				isLoadingRows={isLoading}
 			/>
-		</>
+			<ConfirmationModal
+				isOpen={isModalOpen}
+				onClose={closeModal}
+				onConfirm={handleDelete}
+				title='Confirm Delete User'
+				message={`Are you sure you want to delete ${deleteUser?.username}?`}
+				confirmButtonText={isDeleting ? 'Deleting...' : 'Delete'}
+				confirmButtonClass={
+					isDeleting
+						? MODAL_CONFIRMATION_BUTTON_DELETING_STYLE
+						: MODAL_CONFIRMATION_BUTTON_STYLE
+				}
+				cancelButtonClass={
+					isDeleting ? MODAL_CANCEL_DELETING_STYLE : MODAL_CANCEL_BUTTON_STYLE
+				}
+			/>
+		</PermissionGuard>
 	)
 }
 
