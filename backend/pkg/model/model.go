@@ -1,6 +1,29 @@
 package model
 
-import "reflect"
+import (
+	"reflect"
+	"time"
+)
+
+
+type BaseModel struct {
+	ID int64 `json:"id" db:"id"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
+}
+
+func (b *BaseModel) PrimaryKey() (string, interface{}) {
+	return "id", b.ID
+}
+
+func (b *BaseModel) IsAutoIncrementKey() bool {
+	return true
+}
+
+func (b *BaseModel) SetID(id int64) {
+	b.ID = id
+}
 
 type Model interface {
 	TableName() string

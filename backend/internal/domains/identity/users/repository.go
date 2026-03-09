@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/keithyw/pitch-in/internal/database"
+	"github.com/keithyw/pitch-in/pkg/model"
 	"github.com/keithyw/pitch-in/pkg/repository"
 )
 
@@ -39,7 +40,7 @@ func (r *UserRepositoryImpl) CreateUser(user User) (*User, error) {
 }
 
 func (r *UserRepositoryImpl) DeleteUser(userId int64) error {
-	return r.store.Delete(&User{ID: userId})
+	return r.store.Delete(&User{BaseModel: model.BaseModel{ID: userId}})
 }
 
 func (r *UserRepositoryImpl) FindUsersBy(filter repository.Filter) ([]User, error) {
@@ -50,7 +51,7 @@ func (r *UserRepositoryImpl) FindUsersBy(filter repository.Filter) ([]User, erro
 
 func (r *UserRepositoryImpl) GetUser(userId int64) (*User, error) {
 	var user User
-	err := r.store.Get(&User{ID: userId}, &user)
+	err := r.store.Get(&User{BaseModel: model.BaseModel{ID: userId}}, &user)
 	if err != nil {
 		return nil, err
 	}

@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"testing"
 
+	"github.com/keithyw/pitch-in/pkg/model"
 	"github.com/keithyw/pitch-in/pkg/repository"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -20,7 +21,7 @@ func TestUserService_CreateUser(t *testing.T) {
 		svc := NewUserService(mockRepo, logger)
 		username := "newuser"
 		inputUser := User{UserFields: UserFields{Username: &username}}
-		mockRepo.On("CreateUser", mock.Anything).Return(&User{ID: 1, UserFields: UserFields{Username: &username}}, nil)
+		mockRepo.On("CreateUser", mock.Anything).Return(&User{BaseModel: model.BaseModel{ID: 1}, UserFields: UserFields{Username: &username}}, nil)
 		result, err := svc.CreateUser(inputUser)
 		assert.NoError(t, err)
 		assert.Equal(t, int64(1), result.ID)
@@ -73,8 +74,8 @@ func TestUserService_FindUserBy(t *testing.T) {
 		}
 		
 		expectedUsers := []User{
-			{ID: 1},
-			{ID: 2},
+			{BaseModel: model.BaseModel{ID: 1}},
+			{BaseModel: model.BaseModel{ID: 2}},
 		}
 
 		mockRepo.On("FindUsersBy", filter).Return(expectedUsers, nil).Once()
@@ -106,7 +107,7 @@ func TestUserService_GetUser(t *testing.T) {
 	svc := NewUserService(mockRepo, logger)
 
 	t.Run("Success", func(t *testing.T) {
-		expectedUser := &User{ID: 1}
+		expectedUser := &User{BaseModel: model.BaseModel{ID: 1}}
 		mockRepo.On("GetUser", int64(1)).Return(expectedUser, nil).Once()
 
 		user, err := svc.GetUser(1)
@@ -135,7 +136,7 @@ func TestUserService_GetUserByEmail(t *testing.T) {
 	email := "test@test.com"
 
 	t.Run("Success", func(t *testing.T) {
-		expectedUser := &User{ID: 1, UserFields: UserFields{ Email: &email }}
+		expectedUser := &User{BaseModel: model.BaseModel{ID: 1}, UserFields: UserFields{ Email: &email }}
 		mockRepo.On("GetUserByEmail", email).Return(expectedUser, nil).Once()
 
 		user, err := svc.GetUserByEmail(email)
@@ -168,8 +169,8 @@ func TestUserService_UpdateUser(t *testing.T) {
 		mockRepo := new(MockUserRepository)
 		svc := NewUserService(mockRepo, logger)
 		firstName := "updated"
-		item := User{ID: 1, UserFields: UserFields{FirstName: &firstName, }}
-		mockRepo.On("UpdateUser", mock.Anything).Return(&User{ID: 1, UserFields: UserFields{FirstName: &firstName}}, nil)
+		item := User{BaseModel: model.BaseModel{ID: 1}, UserFields: UserFields{FirstName: &firstName, }}
+		mockRepo.On("UpdateUser", mock.Anything).Return(&User{BaseModel: model.BaseModel{ID: 1}, UserFields: UserFields{FirstName: &firstName}}, nil)
 		result, err := svc.UpdateUser(item)
 		assert.NoError(t, err)
 		assert.Equal(t, int64(1), result.ID)
@@ -180,7 +181,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 		mockRepo := new(MockUserRepository)
 		svc := NewUserService(mockRepo, logger)
         mockRepo.On("UpdateUser", mock.Anything).Return(nil, fmt.Errorf("lock error")).Once()
-        result, err := svc.UpdateUser(User{ID: 1})
+        result, err := svc.UpdateUser(User{BaseModel: model.BaseModel{ID: 1}})
         assert.Nil(t, result)
         assert.Error(t, err)
         assert.Contains(t, err.Error(), "Update user error")

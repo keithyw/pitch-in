@@ -32,7 +32,7 @@ func NewUserService(repo UserRepository, log *slog.Logger) UserService {
 func (s *userServiceImpl) CountUsers(filter repository.Filter) (int64, error) {
 	cnt, err := s.repository.CountUsers(filter)
 	if err != nil {
-		s.log.Error("Failed getting user found", "error", err)
+		s.log.Error("Failed getting user count", "error", err)
 		return 0, fmt.Errorf("user count failure: %w", err)
 	}
 	return cnt, nil

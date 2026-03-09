@@ -1,8 +1,6 @@
 package users
 
 import (
-	"time"
-
 	"github.com/keithyw/pitch-in/pkg/model"
 )
 
@@ -14,11 +12,8 @@ type UserFields struct {
 	IsActive *bool `json:"is_active" db:"is_active" validate:"boolean"`
 }
 type User struct {
-	ID int64 `json:"id" db:"id"`
-	UserFields
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
+	model.BaseModel
+	UserFields	
 }
 
 type PatchUserRequest struct {
@@ -31,18 +26,6 @@ func (u *User) TableName() string {
 
 func (u *User) Columns() []string{
 	return []string{"id", "username", "email", "first_name", "last_name", "is_active", "created_at", "updated_at", "deleted_at"}
-}
-
-func (u *User) IsAutoIncrementKey() bool {
-	return true
-}
-
-func (u *User) PrimaryKey() (string, interface{}) {
-	return "id", u.ID
-}
-
-func (u *User) SetID(id int64) {
-	u.ID = id
 }
 
 func (u *User) ToMap() map[string]interface{} {
@@ -59,7 +42,9 @@ func (u *User) ToMap() map[string]interface{} {
 
 func (p *PatchUserRequest) ToModel(id int64) *User {
 	return &User{
-		ID: id,
+		BaseModel: model.BaseModel{
+			ID: id,
+		},
 		UserFields: p.UserFields,
 	}
 }

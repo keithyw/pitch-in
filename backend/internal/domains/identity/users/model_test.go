@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/keithyw/pitch-in/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,7 +12,7 @@ func TestUser_ModelInterface(t *testing.T) {
 	username := "keithyw"
 	email := "test@example.com"
 	user := &User{
-		ID: 100,
+		BaseModel: model.BaseModel{ ID: 100 },
 		UserFields: UserFields{
 			Username: &username,
 			Email:    &email,

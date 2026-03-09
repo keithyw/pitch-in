@@ -8,6 +8,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/keithyw/pitch-in/internal/database"
 	"github.com/keithyw/pitch-in/internal/domains/identity/users"
+	"github.com/keithyw/pitch-in/pkg/model"
 	"github.com/keithyw/pitch-in/pkg/repository"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -20,7 +21,7 @@ func (m mockResult) RowsAffected() (int64, error) { return 1, nil }
 func TestDBStore_Errors(t *testing.T) {
     mockClient := new(database.MockDBClient)
     store := database.NewDBStore(context.Background(), mockClient)
-    m := &users.User{ID: 1}
+    m := &users.User{BaseModel: model.BaseModel{ID: 1}}
 
     // Simulate a DB failure on Delete
     mockClient.On("Exec", mock.Anything, mock.Anything).Return(nil, fmt.Errorf("connection refused"))
@@ -112,7 +113,7 @@ func TestDBStore_Create(t *testing.T) {
 	store := database.NewDBStore(context.Background(), mockClient)
 	
 	// Define a mock model (assuming you have one for testing)
-	m := &users.User{ID: 0} 
+	m := &users.User{BaseModel: model.BaseModel{ID: 0}}
 	data := map[string]interface{}{"username": "keith"}
 
 	// Set expectation: Create should call Exec with an Insert builder
@@ -130,7 +131,7 @@ func TestDBStore_Delete(t *testing.T) {
 	mockClient := new(database.MockDBClient)
 	store := database.NewDBStore(context.Background(), mockClient)
 	
-	m := &users.User{ID: 1}
+	m := &users.User{BaseModel: model.BaseModel{ID: 1}}
 
 	// Expect Exec to be called with a DELETE query
 	mockClient.On("Exec", mock.Anything, mock.Anything).Return(mockResult{}, nil)
@@ -182,7 +183,7 @@ func TestDBStore_Update(t *testing.T) {
 	store := database.NewDBStore(context.Background(), mockClient)
 	data := map[string]interface{}{"status": "archived"}
 
-	m := &users.User{ID: 1}
+	m := &users.User{BaseModel: model.BaseModel{ID: 1}}
 
 	mockClient.On("Exec", mock.Anything, mock.MatchedBy(func(q sq.Sqlizer) bool {
 		sql, _, _ := q.ToSql()

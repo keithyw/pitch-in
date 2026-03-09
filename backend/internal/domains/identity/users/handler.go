@@ -26,7 +26,7 @@ func NewUserHandler(svc UserService, log *slog.Logger) *UserHandler {
 func (h *UserHandler) Delete(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(req, "userID"), 10, 64)
 	if err != nil {
-		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed get userID: %s", err.Error()))
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to get userID: %s", err.Error()))
 		return
 	}
 	err = h.svc.DeleteUser(id)
@@ -61,7 +61,7 @@ func (h *UserHandler) FindBy(w http.ResponseWriter, req *http.Request) {
 func (h *UserHandler) Get(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(req, "userID"), 10, 64)
 	if err != nil {
-		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed get userID: %s", err.Error()))
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to get userID: %s", err.Error()))
 		return
 	}	
 	user, err := h.svc.GetUser(id)
