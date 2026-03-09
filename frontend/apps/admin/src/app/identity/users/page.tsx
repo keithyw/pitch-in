@@ -1,23 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import toast from 'react-hot-toast'
+import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-	ConfirmationModal,
-	CreateItemSection,
-	PageTitle,
-	PermissionGuard,
-} from '@pitch-in/shared/components'
-import { DataTable } from '@pitch-in/shared/components/ui/table'
-import {
-	DEFAULT_PAGE_SIZE,
-	MODAL_CONFIRMATION_BUTTON_DELETING_STYLE,
-	MODAL_CONFIRMATION_BUTTON_STYLE,
-	MODAL_CANCEL_BUTTON_STYLE,
-	MODAL_CANCEL_DELETING_STYLE,
-} from '@pitch-in/shared/constants'
-import { useDataTableController } from '@pitch-in/shared/hooks'
+import { ListLayout } from '@pitch-in/shared/components'
+import { useDataTableController, useDeleteRecord } from '@pitch-in/shared/hooks'
 import { TableColumn, TableRowAction, User } from '@pitch-in/shared/types'
 import { UserAPI } from '@/lib/clients/api'
 import { CREATE_USERS_URL, USERS_URL } from '@/lib'
@@ -47,56 +33,19 @@ const USER_COLUMNS: TableColumn<User>[] = [
 
 const UsersPage = () => {
 	const router = useRouter()
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [deleteUser, setDeleteUser] = useState<User | null>(null)
-	const [isDeleting, setIsDeleting] = useState(false)
 
-	const {
-		data: users,
-		isLoading,
-		searchTerm,
-		totalCount,
-		currentPage,
-		pageSize,
-		sortField,
-		sortDirection,
-		handleSearch,
-		handlePageChange,
-		handlePageSizeChange,
-		handleSort,
-		loadData,
-	} = useDataTableController({
+	const tableController = useDataTableController({
 		initialSortField: 'username',
-		defaultPageSize: DEFAULT_PAGE_SIZE,
 		fetchData: UserAPI.fetch,
 	})
 
+	const deleteController = useDeleteRecord<User>({
+		deleteFn: UserAPI.delete,
+		onSuccess: tableController.loadData,
+		itemNameProp: 'username',
+	})
+
 	const userColumns = useMemo(() => USER_COLUMNS, [])
-
-	const openModal = (user: User) => {
-		setDeleteUser(user)
-		setIsModalOpen(true)
-	}
-
-	const closeModal = () => {
-		setIsModalOpen(false)
-		setDeleteUser(null)
-	}
-
-	const handleDelete = async () => {
-		if (deleteUser) {
-			setIsDeleting(true)
-			try {
-				await UserAPI.delete(deleteUser.id)
-				toast.success(`User ${deleteUser.username} has been deleted`)
-				loadData()
-				closeModal()
-			} catch (e: unknown) {
-			} finally {
-				setIsDeleting(false)
-			}
-		}
-	}
 
 	const actions: TableRowAction<User>[] = [
 		{
@@ -117,53 +66,28 @@ const UsersPage = () => {
 		},
 		{
 			label: 'Delete',
-			onClick: openModal,
+			onClick: deleteController.openDeleteModal,
 			actionType: 'delete',
 			requiredPermission: '',
 		},
 	]
 
 	return (
-		<PermissionGuard requiredPermission=''>
-			<PageTitle>Users</PageTitle>
-			<CreateItemSection permission='' href={CREATE_USERS_URL}>
-				Create New User
-			</CreateItemSection>
-
-			<DataTable
-				data={users}
-				columns={userColumns}
-				rowKey='id'
-				actions={actions}
-				searchTerm={searchTerm}
-				onSearch={handleSearch}
-				currentPage={currentPage}
-				pageSize={pageSize}
-				totalCount={totalCount}
-				onPageChange={handlePageChange}
-				onPageSizeChange={handlePageSizeChange}
-				onSort={handleSort}
-				currentSortField={sortField}
-				currentSortDirection={sortDirection}
-				isLoadingRows={isLoading}
-			/>
-			<ConfirmationModal
-				isOpen={isModalOpen}
-				onClose={closeModal}
-				onConfirm={handleDelete}
-				title='Confirm Delete User'
-				message={`Are you sure you want to delete ${deleteUser?.username}?`}
-				confirmButtonText={isDeleting ? 'Deleting...' : 'Delete'}
-				confirmButtonClass={
-					isDeleting
-						? MODAL_CONFIRMATION_BUTTON_DELETING_STYLE
-						: MODAL_CONFIRMATION_BUTTON_STYLE
-				}
-				cancelButtonClass={
-					isDeleting ? MODAL_CANCEL_DELETING_STYLE : MODAL_CANCEL_BUTTON_STYLE
-				}
-			/>
-		</PermissionGuard>
+		<ListLayout
+			title='Users'
+			listPermission=''
+			createPermission=''
+			createUrl={CREATE_USERS_URL}
+			createText='Create New User'
+			data={tableController.data}
+			columns={USER_COLUMNS}
+			actions={actions}
+			isLoading={tableController.isLoading}
+			tableController={tableController}
+			deleteController={deleteController}
+			deleteTitle='Confirm Delete User'
+			deleteMessage={(u) => `Are you sure you want to delete ${u?.username}?`}
+		/>
 	)
 }
 

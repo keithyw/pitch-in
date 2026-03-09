@@ -29,10 +29,10 @@ export function useDetailsController<T>({
 
 	const handleDeleteConfirm = useCallback(async () => {
 		if (data) {
-			await deleteData(id)
-			toast.success(`Item deleted successfully`)
-			router.push(redirectUrl)
 			try {
+				await deleteData(id)
+				toast.success(`Item deleted successfully`)
+				router.push(redirectUrl)
 			} catch (e: unknown) {
 				console.error('Failed deleting item: ', e)
 				toast.error(`Failed to delete item`)
