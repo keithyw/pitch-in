@@ -1,6 +1,10 @@
-import { ShieldExclamationIcon, UsersIcon } from '@heroicons/react/24/outline'
+import {
+	IdentificationIcon,
+	ShieldExclamationIcon,
+	UsersIcon,
+} from '@heroicons/react/24/outline'
 import { DashboardGrid } from '@pitch-in/shared/components'
-import { PERMISSIONS_URL, USERS_URL } from '@/lib'
+import { PERMISSIONS_URL, ROLES_URL, USERS_URL } from '@/lib'
 import { DashboardCardProps } from '@pitch-in/shared/types'
 
 const IdentityDashboardPage = () => {
@@ -12,6 +16,12 @@ const IdentityDashboardPage = () => {
 			description: 'Manage permissions',
 			icon: <ShieldExclamationIcon className={iconClass} />,
 			link: PERMISSIONS_URL,
+		},
+		{
+			title: 'Roles',
+			description: 'Manage roles',
+			icon: <IdentificationIcon className={iconClass} />,
+			link: ROLES_URL,
 		},
 		{
 			title: 'Users',

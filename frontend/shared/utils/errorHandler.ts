@@ -72,3 +72,7 @@ export function handleFormErrors<T extends FormFields>(
 		toast.error(UNEXPECTED_SERVER_ERROR)
 	}
 }
+
+export const failedLoadingError = (type: string) => {
+	return `Failed to load ${type}. Please try again.`
+}

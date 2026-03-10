@@ -37,5 +37,6 @@ func (p *PatchRoleRequest) ToModel(id int64) *Role {
 		BaseModel: model.BaseModel{
 			ID: id,
 		},
+		RoleFields: p.RoleFields,
 	}
 }

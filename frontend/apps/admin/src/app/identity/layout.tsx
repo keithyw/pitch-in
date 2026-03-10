@@ -1,6 +1,6 @@
 import { CrudLayout } from '@pitch-in/shared/components'
 import { SubnavBarLink } from '@pitch-in/shared/components'
-import { PERMISSIONS_URL, USERS_URL } from '@/lib'
+import { PERMISSIONS_URL, ROLES_URL, USERS_URL } from '@/lib'
 
 const IdentityLayout = ({
 	children,
@@ -9,6 +9,10 @@ const IdentityLayout = ({
 		{
 			href: PERMISSIONS_URL,
 			label: 'Permissions',
+		},
+		{
+			href: ROLES_URL,
+			label: 'Roles',
 		},
 		{
 			href: USERS_URL,

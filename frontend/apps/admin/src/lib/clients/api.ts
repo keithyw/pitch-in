@@ -5,6 +5,7 @@ import {
 	ServiceFactory,
 	authService,
 	permissionService,
+	roleService,
 	userService,
 } from '@pitch-in/shared/services'
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib'
@@ -29,4 +30,5 @@ const factory = new ServiceFactory(api)
 
 export const AuthAPI = factory.create(authService)
 export const PermissionAPI = factory.create(permissionService)
+export const RoleAPI = factory.create(roleService)
 export const UserAPI = factory.create(userService)
