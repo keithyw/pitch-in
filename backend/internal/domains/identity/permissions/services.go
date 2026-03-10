@@ -87,7 +87,7 @@ func (s *permissionServiceImpl) UpdatePermission(permission Permission) (*Permis
 	updatedPerm, err := s.repository.UpdatePermission(permission)
 	if err != nil {
 		s.log.Error("Failed updating permission", "id", permission.ID, "error", err)
-		return nil, err
+		return nil, fmt.Errorf("Update permission error: %w", err)
 	}
 	return updatedPerm, nil
 }

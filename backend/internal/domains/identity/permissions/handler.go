@@ -26,7 +26,7 @@ func NewPermissionHandler(svc PermissionService, log *slog.Logger) *PermissionHa
 func (h *PermissionHandler) Delete(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(req, "permissionID"), 10, 64)
 	if err != nil {
-		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to getpermissionID: %s", err.Error()))
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to get permissionID: %s", err.Error()))
 		return
 	}
 	err = h.svc.DeletePermission(id)
@@ -52,7 +52,7 @@ func (h *PermissionHandler) FindBy(w http.ResponseWriter, req *http.Request) {
 
 	count, err := h.svc.CountPermissions(*filter)
 	if err != nil {
-		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Faile permission count: %s", err.Error()))
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed permission count: %s", err.Error()))
 		return
 	}
 	response.PaginatedJSON(w, http.StatusOK, count, permissions)

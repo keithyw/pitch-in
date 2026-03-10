@@ -33,8 +33,7 @@ func (p *Permission) ToMap() map[string]interface{} {
 		"path": p.Path,
 		"method": p.Method,
 	}
-	m := model.MapValues(fields)
-	return m
+	return model.MapValues(fields)
 }
 
 func (p *PatchPermissionRequest) ToModel(id int64) *Permission {
