@@ -80,7 +80,7 @@ const UsersPage = () => {
 			createUrl={CREATE_USERS_URL}
 			createText='Create New User'
 			data={tableController.data}
-			columns={USER_COLUMNS}
+			columns={userColumns}
 			actions={actions}
 			isLoading={tableController.isLoading}
 			tableController={tableController}

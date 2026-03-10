@@ -1,14 +1,22 @@
-import { UsersIcon } from '@heroicons/react/24/outline'
+import { ShieldExclamationIcon, UsersIcon } from '@heroicons/react/24/outline'
 import { DashboardGrid } from '@pitch-in/shared/components'
-import { USERS_URL } from '@/lib'
+import { PERMISSIONS_URL, USERS_URL } from '@/lib'
 import { DashboardCardProps } from '@pitch-in/shared/types'
 
 const IdentityDashboardPage = () => {
+	const iconClass = 'mr-2 h-5 w-5 text-blue-600'
+
 	const cards: DashboardCardProps[] = [
+		{
+			title: 'Permissions',
+			description: 'Manage permissions',
+			icon: <ShieldExclamationIcon className={iconClass} />,
+			link: PERMISSIONS_URL,
+		},
 		{
 			title: 'Users',
 			description: 'Manage system users',
-			icon: <UsersIcon className='mr-2 h-5 w-5 text-blue-600' />,
+			icon: <UsersIcon className={iconClass} />,
 			link: USERS_URL,
 		},
 	]

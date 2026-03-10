@@ -1,3 +1,4 @@
 export const API_LOGIN_URL = '/auth/login'
 export const API_REFRESH_URL = '/auth/refresh'
+export const API_PERMISSIONS_URL = '/permissions'
 export const API_USERS_URL = '/users'

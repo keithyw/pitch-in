@@ -4,6 +4,7 @@ import { RefreshResponse } from '@pitch-in/shared/types'
 import {
 	ServiceFactory,
 	authService,
+	permissionService,
 	userService,
 } from '@pitch-in/shared/services'
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib'
@@ -27,4 +28,5 @@ const api = createAxiosClient({
 const factory = new ServiceFactory(api)
 
 export const AuthAPI = factory.create(authService)
+export const PermissionAPI = factory.create(permissionService)
 export const UserAPI = factory.create(userService)

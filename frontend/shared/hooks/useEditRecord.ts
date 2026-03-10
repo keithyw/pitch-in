@@ -1,36 +1,26 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { useForm, Resolver, DefaultValues } from 'react-hook-form'
+import { useForm, Resolver, DefaultValues, FieldValues } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { handleFormErrors } from '@pitch-in/shared/utils'
 
-interface UseEditRecordProps<
-	T,
-	U,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	ZodSchema extends z.ZodObject<any>,
-> {
+interface UseEditRecordProps<T extends z.ZodTypeAny, TResponse> {
 	id: number
-	defaultValues?: Partial<z.infer<ZodSchema>>
-	getData: (id: number) => Promise<T>
-	updateData: (id: number, data: U) => Promise<T>
+	defaultValues?: Partial<z.infer<T>>
+	getData: (id: number) => Promise<TResponse>
+	updateData: (id: number, data: z.infer<T>) => Promise<TResponse>
 	errorLoadingMessage: string
 	redirectUrl: string
-	schema: ZodSchema
-	handleFetchCallback: (data: T) => Partial<z.infer<ZodSchema>>
-	transformData: (data: z.infer<ZodSchema>) => Promise<U>
+	schema: T
+	handleFetchCallback: (data: TResponse) => Partial<z.infer<T>>
+	transformData: (data: z.infer<T>) => Promise<z.infer<T>>
 }
 
-export function useEditRecord<
-	T,
-	U,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	ZodSchema extends z.ZodObject<any>,
->({
+export function useEditRecord<T extends z.ZodTypeAny, TResponse>({
 	id,
 	defaultValues,
 	getData,
@@ -40,35 +30,29 @@ export function useEditRecord<
 	schema,
 	handleFetchCallback,
 	transformData,
-}: UseEditRecordProps<T, U, ZodSchema>) {
+}: UseEditRecordProps<T, TResponse>) {
+	type TFieldValues = z.infer<T> & FieldValues
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [loadingError, setLoadingError] = useState<string | null>(null)
-	const [data, setData] = useState<T | null>(null)
-	type SchemaForm = z.infer<ZodSchema>
-	const resolver = zodResolver(schema) as unknown as Resolver<SchemaForm>
+	const [data, setData] = useState<TResponse | null>(null)
 
-	const {
-		register,
-		handleSubmit,
-		setError,
-		reset,
-		formState: { errors, isSubmitting },
-		control,
-	} = useForm<z.infer<ZodSchema>>({
-		resolver: resolver,
-		defaultValues: defaultValues as DefaultValues<SchemaForm>,
+	const formMethods = useForm<TFieldValues>({
+		resolver: zodResolver(schema as any),
+		defaultValues: defaultValues as DefaultValues<TFieldValues>,
 	})
 
-	const onSubmit = async (form: SchemaForm) => {
+	const { handleSubmit, setError, reset } = formMethods
+
+	const onSubmit = async (data: TFieldValues) => {
 		try {
-			const payload = await transformData(form)
+			const payload = await transformData(data)
 			const res = await updateData(id, payload)
 			setData(res)
 			toast.success(`Item updated successfully!`)
 			router.push(redirectUrl)
 		} catch (e: unknown) {
-			handleFormErrors<SchemaForm>(
+			handleFormErrors<TFieldValues>(
 				e,
 				setError,
 				'Failed to edit item. Please review your input.',
@@ -84,7 +68,7 @@ export function useEditRecord<
 			if (res) {
 				setData(res)
 				const vals = handleFetchCallback(res)
-				reset(vals as DefaultValues<SchemaForm>)
+				reset(vals as DefaultValues<TFieldValues>)
 			}
 		} catch (e: unknown) {
 			if (e instanceof Error) {
@@ -113,11 +97,11 @@ export function useEditRecord<
 	return {
 		data,
 		isLoading,
-		fieldErrors: errors,
-		isSubmitting,
+		fieldErrors: formMethods.formState.errors,
+		isSubmitting: formMethods.formState.isSubmitting,
 		loadingError,
-		register,
-		control,
+		register: formMethods.register,
+		control: formMethods.control,
 		reset,
 		onSubmit: handleSubmit(onSubmit),
 	}

@@ -70,9 +70,9 @@ export const ListLayout = <T extends { id: number }>({
 			<ConfirmationModal
 				isOpen={deleteController.isModalOpen}
 				onClose={deleteController.closeDeleteModal}
-				onConfirm={deleteController.handleDeleteConfirm}
+				onConfirm={deleteController.handleDelete}
 				title={deleteTitle}
-				message={deleteMessage(deleteController.itemToDelete)}
+				message={deleteMessage(deleteController.deleteItem)}
 				confirmButtonText={
 					deleteController.isDeleting ? 'Deleting...' : 'Delete'
 				}

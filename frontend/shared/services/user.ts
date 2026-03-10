@@ -44,5 +44,3 @@ export const userService = (client: AxiosInstance): UserService => ({
 		return r.data || ({} as User)
 	},
 })
-
-// 	r.Patch("/{userID}", middleware.DecodeAndValidate(h.Patch))

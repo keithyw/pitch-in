@@ -3,43 +3,39 @@
 import { useCallback, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { DetailsLayout, DetailSectionRow } from '@pitch-in/shared/components'
-import { FAILED_LOADING_USER_ERROR } from '@pitch-in/shared/constants'
-import { User } from '@pitch-in/shared/types'
-import { useDetailsController } from '@pitch-in/shared/hooks'
-import { USERS_URL } from '@/lib'
-import { UserAPI } from '@/lib/clients/api'
+import { FAILED_LOADING_PERMISSION_ERROR } from '@pitch-in/shared/constants'
+import { Permission } from '@pitch-in/shared/types'
+import { useDetailsController } from '@pitch-in/shared'
+import { PERMISSIONS_URL } from '@/lib'
+import { PermissionAPI } from '@/lib/clients/api'
 
-const UserDetailsPage = () => {
+const PermissionDetailsPage = () => {
 	const params = useParams()
 	const [details, setDetails] = useState<DetailSectionRow[]>([])
 
-	const detailsCallback = useCallback((res: User) => {
+	const detailsCallback = useCallback((p: Permission) => {
 		setDetails([
 			{
-				label: 'Username',
-				value: res.username,
+				label: 'Code',
+				value: p.code,
 			},
 			{
-				label: 'Email',
-				value: res.email,
+				label: 'Display Name',
+				value: p.display_name,
 			},
 			{
-				label: 'First Name',
-				value: res.first_name,
+				label: 'Path',
+				value: p.path,
 			},
 			{
-				label: 'Last Name',
-				value: res.last_name,
-			},
-			{
-				label: 'Is Active',
-				value: res.is_active ? 'Yes' : 'No',
+				label: 'Method',
+				value: p.method,
 			},
 		])
 	}, [])
 
 	const {
-		data: user,
+		data: permission,
 		isLoading,
 		error,
 		handleDeleteConfirm,
@@ -48,17 +44,17 @@ const UserDetailsPage = () => {
 		setIsConfirmationModalOpen,
 	} = useDetailsController({
 		id: parseInt(params.id as string),
-		deleteData: UserAPI.delete,
-		getData: UserAPI.get,
-		redirectUrl: USERS_URL,
-		errorLoadingMessage: FAILED_LOADING_USER_ERROR,
+		deleteData: PermissionAPI.delete,
+		getData: PermissionAPI.get,
+		redirectUrl: PERMISSIONS_URL,
+		errorLoadingMessage: FAILED_LOADING_PERMISSION_ERROR,
 		handleDetailsCallback: detailsCallback,
 	})
 
 	return (
 		<DetailsLayout
-			title='User Details'
-			item={user as User}
+			title='Permission Details'
+			item={permission as Permission}
 			details={details}
 			handleDeleteConfirm={handleDeleteConfirm}
 			handleEditClick={handleEditClick}
@@ -70,4 +66,4 @@ const UserDetailsPage = () => {
 	)
 }
 
-export default UserDetailsPage
+export default PermissionDetailsPage
