@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/keithyw/pitch-in/internal/domains/identity/roles"
 	"github.com/keithyw/pitch-in/pkg/model"
 )
 
@@ -13,7 +14,8 @@ type UserFields struct {
 }
 type User struct {
 	model.BaseModel
-	UserFields	
+	UserFields
+	Roles []roles.Role `json:"roles"`
 }
 
 type PatchUserRequest struct {
@@ -38,6 +40,14 @@ func (u *User) ToMap() map[string]interface{} {
 	}
 	m := model.MapValues(fields)
 	return m
+}
+
+func (u User) RoleLink() model.LinkDef {
+	return model.LinkDef{
+		TableName: "user_roles",
+		LeftKey: "user_id",
+		RightKey: "role_id",
+	}
 }
 
 func (p *PatchUserRequest) ToModel(id int64) *User {

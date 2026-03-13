@@ -8,9 +8,11 @@ import (
 )
 
 type UserService interface {
+	AttachRole(roleID, userID int64) error
 	CountUsers(filter repository.Filter) (int64, error)
 	CreateUser(user User) (*User, error)
 	DeleteUser(userId int64) error
+	DetachRole(roleID, userID int64) error
 	FindUserBy(filter repository.Filter) ([]User, error)
 	GetUser(userId int64) (*User, error)
 	GetUserByEmail(email string) (*User, error)
@@ -27,6 +29,15 @@ func NewUserService(repo UserRepository, log *slog.Logger) UserService {
 		repository: repo,
 		log: log,
 	}
+}
+
+func (s *userServiceImpl) AttachRole(roleID, userID int64) error {
+	err := s.repository.AttachRole(roleID, userID)
+	if err != nil {
+		s.log.Error("Failed attaching role", "roleID", roleID, "error", err)
+		return fmt.Errorf("attach role failure: %w", err)
+	}
+	return nil
 }
 
 func (s *userServiceImpl) CountUsers(filter repository.Filter) (int64, error) {
@@ -56,6 +67,15 @@ func (s *userServiceImpl) DeleteUser(userId int64) error {
 	return nil
 }
 
+func (s *userServiceImpl) DetachRole(roleID, userID int64) error {
+	err := s.repository.DetachRole(roleID, userID)
+	if err != nil {
+		s.log.Error("Failed detaching role", "roleID", roleID, "error", err)
+		return fmt.Errorf("detach role failure: %w", err)
+	}
+	return nil
+}
+
 func (s *userServiceImpl) FindUserBy(filter repository.Filter) ([]User, error) {
 	users, err := s.repository.FindUsersBy(filter)
 	if err != nil {
@@ -71,6 +91,14 @@ func (s *userServiceImpl) GetUser(userId int64) (*User, error) {
 		s.log.Error("Failed getting user", "userId", userId, "error", err)
 		return nil, fmt.Errorf("Get user error: %w", err)
 	}
+
+	roles, err := s.repository.GetRolesByUserId(userId)
+	if err != nil {
+		s.log.Error("Failed getting roles by user", "userId", userId, "error", err)
+		return nil, fmt.Errorf("Get roles by userId error: %w", err)
+	}
+
+	user.Roles = roles
 	return user, nil
 }
 

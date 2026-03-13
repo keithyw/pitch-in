@@ -9,6 +9,10 @@ type MockUserService struct {
 	mock.Mock
 }
 
+func (m *MockUserService) AttachRole(roleID, userID int64) error {
+	return m.Called(roleID, userID).Error(0)
+}
+
 func (m *MockUserService) CountUsers(filter repository.Filter) (int64, error) {
 	args := m.Called(filter)
 	if args.Get(0) == nil { return 0, args.Error(1) }
@@ -23,6 +27,10 @@ func (m *MockUserService) CreateUser(user User) (*User, error) {
 
 func (m *MockUserService) DeleteUser(userId int64) error {
 	return m.Called(userId).Error(0)
+}
+
+func (m *MockUserService) DetachRole(roleID, userID int64) error {
+	return m.Called(roleID, userID).Error(0)
 }
 
 func (m *MockUserService) FindUserBy(filter repository.Filter) ([]User, error) {

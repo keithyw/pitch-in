@@ -16,5 +16,7 @@ func NewUserRouter(jwtService *jwt.JWTService, h *UserHandler) http.Handler {
 	r.Get("/", h.FindBy)
 	r.Post("/", middleware.DecodeAndValidate(h.Post))
 	r.Patch("/{userID}", middleware.DecodeAndValidate(h.Patch))
+	r.Post("/{userID}/roles", middleware.DecodeAndValidate(h.AttachRole))
+	r.Delete("/{userID}/roles/{roleID}", h.DetachRole)
 	return r
 }

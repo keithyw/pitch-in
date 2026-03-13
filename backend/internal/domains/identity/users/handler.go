@@ -11,6 +11,9 @@ import (
 	"github.com/keithyw/pitch-in/pkg/response"
 )
 
+type AttachRoleRequest struct {
+	RoleID int64 `json:"role_id" validate:"required"`
+}
 type UserHandler struct {
 	svc UserService
 	log *slog.Logger
@@ -23,6 +26,20 @@ func NewUserHandler(svc UserService, log *slog.Logger) *UserHandler {
 	}
 }
 
+func (h *UserHandler) AttachRole(w http.ResponseWriter, req *http.Request, roleRequest AttachRoleRequest) {
+	id, err := strconv.ParseInt(chi.URLParam(req, "userID"), 10, 64)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Faile to parse userID: %w", err.Error()))
+		return
+	}
+	err = h.svc.AttachRole(roleRequest.RoleID, id)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed to attach role: %w", err.Error()))
+		return
+	}
+	response.JSON(w, http.StatusCreated, nil)
+}
+
 func (h *UserHandler) Delete(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(req, "userID"), 10, 64)
 	if err != nil {
@@ -32,6 +49,25 @@ func (h *UserHandler) Delete(w http.ResponseWriter, req *http.Request) {
 	err = h.svc.DeleteUser(id)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed to delete user: %s", err.Error()))
+		return
+	}
+	response.JSON(w, http.StatusNoContent, nil)
+}
+
+func (h *UserHandler) DetachRole(w http.ResponseWriter, req *http.Request) {
+	id, err := strconv.ParseInt(chi.URLParam(req, "userID"), 10, 64)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to get userID: %s", err.Error()))
+		return
+	}
+	roleId, err := strconv.ParseInt(chi.URLParam(req, "roleID"), 10, 64)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to get roleID: %s", err.Error()))
+		return
+	}
+	err = h.svc.DetachRole(roleId, id)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed to detach role: %w", err))
 		return
 	}
 	response.JSON(w, http.StatusNoContent, nil)
