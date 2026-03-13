@@ -10,9 +10,11 @@ import (
 )
 
 type DBStore interface {
+	Attach(link model.LinkDef, leftID, rightID int64) error
 	Count(m model.Model, filter repository.Filter) (int64, error)
 	Create(m model.Model, data map[string]interface{}, result interface{}) error
 	Delete(m model.Model) error
+	Detach(link model.LinkDef, leftID, rightID int64) error
 	FindBy(m model.Model, filter repository.Filter, result interface{}) error
 	Get(m model.Model, result interface{}) error
 	GetBy(m model.Model, key string, value any, result interface{}) error
@@ -32,6 +34,17 @@ func NewDBStore(ctx context.Context, client DBClient) DBStore {
 		Client: client,
 		ctx: ctx,
 	}
+}
+
+func (s *dbStoreImpl) Attach(link model.LinkDef, leftID, rightID  int64) error {
+	data := map[string]interface{}{
+		link.LeftKey: leftID,
+		link.RightKey: rightID,
+	}
+
+	q := sq.Insert(link.TableName).SetMap(data).PlaceholderFormat(sq.Question)
+	_, err := s.GetClient().Exec(s.ctx, q)
+	return err
 }
 
 func (s *dbStoreImpl) Count(m model.Model, filter repository.Filter) (int64, error) {
@@ -78,6 +91,14 @@ func (s *dbStoreImpl) Delete(m model.Model) error {
 	key, val := m.PrimaryKey()
 	b := sq.Delete(m.TableName()).Where(sq.Eq{key: val})
 	_, err := s.GetClient().Exec(s.ctx, b)
+	return err
+}
+
+func (s *dbStoreImpl) Detach(link model.LinkDef, leftID, rightID int64) error {
+	q := sq.Delete(link.TableName).
+		Where(sq.Eq{ link.LeftKey: leftID, link.RightKey: rightID }).
+		PlaceholderFormat(sq.Question)
+	_, err := s.GetClient().Exec(s.ctx, q)
 	return err
 }
 

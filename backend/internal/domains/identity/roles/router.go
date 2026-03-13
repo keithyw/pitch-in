@@ -16,5 +16,7 @@ func NewRoleRouter(jwtService *jwt.JWTService, h *RoleHandler) http.Handler {
 	r.Get("/", h.FindBy)
 	r.Post("/", middleware.DecodeAndValidate(h.Post))
 	r.Patch("/{roleID}", middleware.DecodeAndValidate(h.Patch))
+	r.Post("/{roleID}/permissions", middleware.DecodeAndValidate(h.AttachPermission))
+	r.Delete("/{roleID}/permissions/{permissionID}", h.DetachPermission)
 	return r
 }

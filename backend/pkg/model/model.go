@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-
 type BaseModel struct {
 	ID int64 `json:"id" db:"id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
@@ -47,4 +46,10 @@ func MapValues(fields map[string]interface{}) map[string]interface{} {
 		}
 	}
 	return m
+}
+
+type LinkDef struct {
+	TableName string
+	LeftKey string
+	RightKey string
 }

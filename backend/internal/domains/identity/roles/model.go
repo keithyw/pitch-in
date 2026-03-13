@@ -1,6 +1,9 @@
 package roles
 
-import "github.com/keithyw/pitch-in/pkg/model"
+import (
+	"github.com/keithyw/pitch-in/internal/domains/identity/permissions"
+	"github.com/keithyw/pitch-in/pkg/model"
+)
 
 type RoleFields struct {
 	Name *string `json:"name,omitempty" db:"name" validate:"omitempty,min=3,max=255"`
@@ -10,6 +13,7 @@ type RoleFields struct {
 type Role struct {
 	model.BaseModel
 	RoleFields
+	Permissions []permissions.Permission `json:"permissions"`
 }
 
 type PatchRoleRequest struct {
@@ -30,6 +34,14 @@ func (r *Role) ToMap() map[string]interface{} {
 		"description": r.Description,
 	}
 	return model.MapValues(fields)
+}
+
+func (r Role) PermissionLink() model.LinkDef {
+	return model.LinkDef{
+		TableName: "role_permissions",
+		LeftKey: "role_id",
+		RightKey: "permission_id",
+	}
 }
 
 func (p *PatchRoleRequest) ToModel(id int64) *Role {

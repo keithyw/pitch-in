@@ -23,7 +23,9 @@ interface DetailsLayoutProps<T> {
 	isConfirmationModalOpen: boolean
 	setIsConfirmationModalOpen: (isOpen: boolean) => void
 	error: string | null
+	buttons?: React.ReactNode
 	children?: React.ReactNode
+	popups?: React.ReactNode
 }
 
 export const DetailsLayout = <T extends HasId>({
@@ -36,7 +38,9 @@ export const DetailsLayout = <T extends HasId>({
 	isConfirmationModalOpen,
 	setIsConfirmationModalOpen,
 	error,
+	buttons,
 	children,
+	popups,
 }: DetailsLayoutProps<T>) => {
 	if (isLoading) {
 		return <SpinnerSection spinnerMessage='Loading details...' />
@@ -54,6 +58,7 @@ export const DetailsLayout = <T extends HasId>({
 				{children}
 				<PermissionGuard>
 					<div className='mt-6 flex justify-end space-x-3'>
+						{buttons}
 						<Button actionType='edit' onClick={handleEditClick}>
 							Edit
 						</Button>
@@ -73,6 +78,7 @@ export const DetailsLayout = <T extends HasId>({
 				title='Confirm Deletion'
 				message='Are you sure you want to delete this item?'
 			/>
+			{popups}
 		</div>
 	)
 }

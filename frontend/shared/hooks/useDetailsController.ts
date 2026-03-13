@@ -81,6 +81,8 @@ export function useDetailsController<T>({
 	return {
 		data,
 		isLoading,
+		setData,
+		setIsLoading,
 		error,
 		handleDeleteConfirm,
 		handleEditClick,
