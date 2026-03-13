@@ -1,3 +1,4 @@
+import { Role } from './role'
 export interface User {
 	id: number
 	username: string
@@ -7,6 +8,7 @@ export interface User {
 	is_active: boolean
 	created_at: string
 	updated_at: string
+	roles?: Role[] | null
 }
 
 export interface CreateUserRequest {

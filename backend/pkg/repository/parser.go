@@ -45,7 +45,7 @@ func (p *Parser) getFieldsFor(model interface{}) fieldsMap {
 
 	var extractFields func(reflect.Type)
 	extractFields = func(st reflect.Type) {	
-		for i := 0; i < v.NumField(); i++ {
+		for i := 0; i < st.NumField(); i++ {
 			field := st.Field(i)
 			if field.Anonymous && field.Type.Kind() == reflect.Struct {
 				extractFields(field.Type)
