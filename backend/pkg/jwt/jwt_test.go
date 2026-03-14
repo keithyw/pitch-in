@@ -12,10 +12,11 @@ func TestJWTService_ParseJWT(t *testing.T) {
 	secret := "secret"
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	svc := jwt.NewJWTService(secret, 1, logger)
+	roles := []string{"admin"}
 
-	validToken, _ := svc.CreateJWT(1, "testuser")
+	validToken, _ := svc.CreateJWT(1, "testuser", roles)
 	expiredSvc := jwt.NewJWTService(secret, -1, logger)
-	expiredToken, _ := expiredSvc.CreateJWT(1, "testuser")
+	expiredToken, _ := expiredSvc.CreateJWT(1, "testuser", roles)
 
 	tests := []struct {
 		name string
@@ -44,7 +45,7 @@ func TestJWTService_ParseJWT(t *testing.T) {
 			name:        "Failure - Wrong Secret",
 			tokenString: func() string {
 				otherSvc := jwt.NewJWTService("wrong-secret", 1, logger)
-				tkn, _ := otherSvc.CreateJWT(1, "user")
+				tkn, _ := otherSvc.CreateJWT(1, "user", roles)
 				return tkn
 			}(),
 			wantErr:     true,

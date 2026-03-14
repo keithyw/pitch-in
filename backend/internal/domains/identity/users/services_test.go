@@ -137,6 +137,7 @@ func TestUserService_GetUserByEmail(t *testing.T) {
 
 	t.Run("Success", func(t *testing.T) {
 		expectedUser := &User{BaseModel: model.BaseModel{ID: 1}, UserFields: UserFields{ Email: &email }}
+		mockRepo.On("GetRolesByUserId", int64(1)).Return(nil, nil).Once()
 		mockRepo.On("GetUserByEmail", email).Return(expectedUser, nil).Once()
 
 		user, err := svc.GetUserByEmail(email)

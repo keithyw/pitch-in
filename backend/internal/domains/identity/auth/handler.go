@@ -60,13 +60,18 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request, req LoginReq
 		return
 	}
 
-	token, err := h.jwt.CreateJWT(user.ID, *user.Username)
+	var roles []string
+	for _, r := range user.Roles {
+		roles = append(roles, *r.Name)
+	}
+
+	token, err := h.jwt.CreateJWT(user.ID, *user.Username, roles)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Could not generate JWT: %s", err.Error()))
 		return
 	}
 
-	refreshToken, err := h.jwt.CreateRefreshJWT(user.ID, *user.Username)
+	refreshToken, err := h.jwt.CreateRefreshJWT(user.ID, *user.Username, roles)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Could not generate JWT Refresh: %s", err.Error()))
 		return
@@ -86,13 +91,13 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request, req Refres
 		return
 	}
 
-	token, err := h.jwt.CreateJWT(claims.UserID, claims.Username)
+	token, err := h.jwt.CreateJWT(claims.UserID, claims.Username, claims.Roles)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
 
-	refresh, err := h.jwt.CreateRefreshJWT(claims.UserID, claims.Username)
+	refresh, err := h.jwt.CreateRefreshJWT(claims.UserID, claims.Username, claims.Roles)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, "Failed to generate refresh token")
 		return

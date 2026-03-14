@@ -15,6 +15,7 @@ func TestAuthMiddleware(t *testing.T) {
     logger := slog.New(slog.NewTextHandler(io.Discard, nil))
     svc := jwt.NewJWTService("secret", 1, logger)
     mw := middleware.AuthMiddleware(svc)
+    roles := []string{"admin"}
 
     // A simple handler that returns 200 OK if the middleware lets it through
     nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +46,7 @@ func TestAuthMiddleware(t *testing.T) {
             name:       "Invalid Token - Wrong Secret",
             authHeader: "Bearer " + func() string {
                 badSvc := jwt.NewJWTService("wrong-secret", 1, logger)
-                tkn, _ := badSvc.CreateJWT(1, "user")
+                tkn, _ := badSvc.CreateJWT(1, "user", roles)
                 return tkn
             }(),
             wantStatus: http.StatusUnauthorized, // Hits: if err != nil (after ParseJWT)
@@ -53,7 +54,7 @@ func TestAuthMiddleware(t *testing.T) {
         {
             name:       "Valid Token",
             authHeader: "Bearer " + func() string {
-                tkn, _ := svc.CreateJWT(1, "user")
+                tkn, _ := svc.CreateJWT(1, "user", roles)
                 return tkn
             }(),
             wantStatus: http.StatusOK,

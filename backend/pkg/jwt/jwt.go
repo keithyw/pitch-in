@@ -11,6 +11,7 @@ import (
 type JWTClaim struct {
 	UserID int64 `json:"user_id"`
 	Username string `json:"username"`
+	Roles []string `json:"roles"`
 	jwt.RegisteredClaims
 }
 
@@ -28,11 +29,12 @@ func NewJWTService(secret string, hours int, log *slog.Logger) *JWTService {
 	}
 }
 
-func (s *JWTService) CreateJWT(userID int64, username string) (string, error) {
+func (s *JWTService) CreateJWT(userID int64, username string, roles []string) (string, error) {
 	s.log.Info(fmt.Sprintf("secret info: %s", s.secret))
 	claims:= &JWTClaim{
 		UserID: userID,
 		Username: username,
+		Roles: roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.expiration)),
 			IssuedAt: jwt.NewNumericDate(time.Now()),
@@ -43,11 +45,12 @@ func (s *JWTService) CreateJWT(userID int64, username string) (string, error) {
 	return token.SignedString(s.secret)
 }
 
-func (s *JWTService) CreateRefreshJWT(userID int64, username string) (string, error) {
+func (s *JWTService) CreateRefreshJWT(userID int64, username string, roles []string) (string, error) {
 	s.log.Info(fmt.Sprintf("secret info: %s", s.secret))
 	claims:= &JWTClaim{
 		UserID: userID,
 		Username: username,
+		Roles: roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)),
 			IssuedAt: jwt.NewNumericDate(time.Now()),

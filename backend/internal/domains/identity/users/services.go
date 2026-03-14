@@ -108,6 +108,14 @@ func (s *userServiceImpl) GetUserByEmail(email string) (*User, error) {
 		s.log.Error("Failed getting user by email", "email", email, "error", err)
 		return nil, fmt.Errorf("Get user by email error: %w", err)
 	}
+
+	roles, err := s.repository.GetRolesByUserId(user.ID)
+	if err != nil {
+		s.log.Error("Failed getting roles by user", "userId", user.ID, "error", err)
+		return nil, fmt.Errorf("Get roles by userId error: %w", err)
+	}
+
+	user.Roles = roles
 	return user, nil
 }
 
