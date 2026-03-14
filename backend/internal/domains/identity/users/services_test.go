@@ -109,7 +109,7 @@ func TestUserService_GetUser(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		expectedUser := &User{BaseModel: model.BaseModel{ID: 1}}
 		mockRepo.On("GetUser", int64(1)).Return(expectedUser, nil).Once()
-
+		mockRepo.On("GetRolesByUserId", int64(1)).Return(nil, nil).Once()
 		user, err := svc.GetUser(1)
 
 		assert.NoError(t, err)

@@ -44,7 +44,7 @@ func TestUserHandler_Delete(t *testing.T) {
 		r.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
-		assert.Contains(t, rr.Body.String(), "Failed get userID")
+		assert.Contains(t, rr.Body.String(), "Failed to get userID")
 	})
 }
 
@@ -74,6 +74,9 @@ func TestUserHandler_FindBy(t *testing.T) {
     handler := NewUserHandler(mockSvc, slog.Default())
 
     t.Run("Valid Query Params", func(t *testing.T) {
+		mockSvc.On("CountUsers", mock.MatchedBy(func(f repository.Filter) bool {
+			return f.Limit == 5
+		})).Return(int64(1), nil).Once()
         // Mock expects a filter with limit 5
         mockSvc.On("FindUserBy", mock.MatchedBy(func(f repository.Filter) bool {
             return f.Limit == 5
