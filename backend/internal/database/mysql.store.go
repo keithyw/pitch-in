@@ -19,6 +19,7 @@ type DBStore interface {
 	Get(m model.Model, result interface{}) error
 	GetBy(m model.Model, key string, value any, result interface{}) error
 	GetClient() DBClient
+	GetContext() context.Context
 	Select(m model.Model) sq.SelectBuilder
 	Update(m model.Model, data map[string]interface{}, result interface{}) error
 	MakeQueryFromFilter(filter repository.Filter, q sq.SelectBuilder) sq.SelectBuilder
@@ -131,6 +132,10 @@ func (s *dbStoreImpl) GetBy(m model.Model, key string, value any, result interfa
 
 func (s *dbStoreImpl) GetClient() DBClient {
 	return s.Client
+}
+
+func (s *dbStoreImpl) GetContext() context.Context {
+	return s.ctx
 }
 
 func(s *dbStoreImpl) Select(m model.Model) sq.SelectBuilder {

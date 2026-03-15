@@ -14,7 +14,6 @@ type DBClient interface {
 	Get(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
 	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 	Query(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
-	// QueryWithRows(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
 	QueryMany(builder squirrel.Sqlizer) (*sql.Rows, error)
 	Exec (ctx context.Context, builder squirrel.Sqlizer) (sql.Result, error)
 }

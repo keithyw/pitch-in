@@ -17,7 +17,7 @@ type RoleRepository interface {
 	FindRoleBy(filter repository.Filter) ([]Role, error)
 	GetRole(id int64) (*Role, error)
 	GetPermissionsByRoleId(id int64) ([]permissions.Permission, error)
-	UpdateRole(role Role) (*Role, error)
+	UpdateRole(role Role) (*Role, error)	
 }
 
 type RoleRepositoryImpl struct {
