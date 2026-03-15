@@ -11,6 +11,7 @@ import (
 
 type AuthService interface {
 	Login(email, password string) (*users.User, error)
+	GetPermissionsByUserId(userId int64) ([]string, error)
 	Logout() (error)
 	PasswordReset() (error)
 	Register(u users.User, password string) (*users.User, error)
@@ -44,6 +45,11 @@ func (s *authServiceImpl) Login(email, password string) (*users.User, error) {
 		return nil, fmt.Errorf("invalid credentials: %w", err)
 	}
 	return u, nil
+}
+
+// lazy
+func (s *authServiceImpl) GetPermissionsByUserId(userId int64) ([]string, error) {
+	return s.userService.GetPermissionsByUserId(userId)
 }
 
 func (s *authServiceImpl) Logout() (error) {

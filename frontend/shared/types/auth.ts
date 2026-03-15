@@ -1,9 +1,13 @@
-import { User } from '@pitch-in/shared/types'
-
+export interface AuthUser {
+	id: number
+	username: string
+	roles: string[]
+	permissions: string[]
+}
 export interface LoginResponse {
 	token: string
 	refresh: string
-	user: User
+	user: AuthUser
 }
 
 export interface RefreshResponse {

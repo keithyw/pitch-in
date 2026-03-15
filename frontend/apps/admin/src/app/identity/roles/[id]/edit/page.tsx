@@ -3,13 +3,13 @@
 import { useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import { EditFormLayout } from '@pitch-in/shared/components'
+import { IDENTITY_WRITE } from '@pitch-in/shared/constants'
 import { useEditRecord } from '@pitch-in/shared/hooks'
 import { roleCreateSchema, RoleCreateFormData } from '@pitch-in/shared/schemas'
 import { FormField, Role } from '@pitch-in/shared/types'
 import { failedLoadingError } from '@pitch-in/shared/utils'
 import { ROLES_URL } from '@/lib'
 import { RoleAPI } from '@/lib/clients/api'
-import { describe } from 'zod/v4/core'
 
 const fields: FormField<RoleCreateFormData>[] = [
 	{
@@ -53,7 +53,7 @@ const EditRolePage = () => {
 
 	return (
 		<EditFormLayout
-			permission=''
+			permission={IDENTITY_WRITE}
 			item={editController.data as Role}
 			title='Edit Role'
 			fields={fields}

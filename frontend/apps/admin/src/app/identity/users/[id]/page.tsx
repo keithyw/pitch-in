@@ -8,7 +8,11 @@ import {
 	DetailSectionRow,
 	ViewDetailsTable,
 } from '@pitch-in/shared/components'
-import { FAILED_LOADING_USER_ERROR } from '@pitch-in/shared/constants'
+import {
+	FAILED_LOADING_USER_ERROR,
+	IDENTITY_READ,
+	IDENTITY_WRITE,
+} from '@pitch-in/shared/constants'
 import { Role, TableColumn, User } from '@pitch-in/shared/types'
 import {
 	useDetailsController,
@@ -125,6 +129,8 @@ const UserDetailsPage = () => {
 			isConfirmationModalOpen={isConfirmationModalOpen}
 			setIsConfirmationModalOpen={setIsConfirmationModalOpen}
 			error={error}
+			viewPermission={IDENTITY_READ}
+			writePermission={IDENTITY_WRITE}
 			buttons={
 				<Button actionType='view' onClick={() => setIsDrawerOpen(true)}>
 					Manage Roles

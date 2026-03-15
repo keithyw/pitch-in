@@ -3,7 +3,10 @@
 import { useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import { EditFormLayout } from '@pitch-in/shared/components'
-import { FAILED_LOADING_PERMISSION_ERROR } from '@pitch-in/shared/constants'
+import {
+	FAILED_LOADING_PERMISSION_ERROR,
+	IDENTITY_WRITE,
+} from '@pitch-in/shared/constants'
 import { useEditRecord } from '@pitch-in/shared/hooks'
 import {
 	permissionCreateSchema,
@@ -79,7 +82,7 @@ const EditPermissionPage = () => {
 	})
 	return (
 		<EditFormLayout
-			permission=''
+			permission={IDENTITY_WRITE}
 			item={permission as Permission}
 			title='Edit Permission'
 			fields={fields}

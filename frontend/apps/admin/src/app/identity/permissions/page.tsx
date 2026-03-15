@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { ListLayout } from '@pitch-in/shared/components'
+import { IDENTITY_READ, IDENTITY_WRITE } from '@pitch-in/shared/constants'
 import { useDataTableController, useDeleteRecord } from '@pitch-in/shared/hooks'
 import { CREATE_PERMISSIONS_URL, PERMISSIONS_URL } from '@/lib'
 import { Permission, TableColumn, TableRowAction } from '@pitch-in/shared/types'
@@ -70,8 +71,8 @@ const PermissionsPage = () => {
 	return (
 		<ListLayout
 			title='Permissions'
-			listPermission=''
-			createPermission=''
+			listPermission={IDENTITY_READ}
+			createPermission={IDENTITY_WRITE}
 			createUrl={CREATE_PERMISSIONS_URL}
 			createText='Create New Permission'
 			data={tableController.data}

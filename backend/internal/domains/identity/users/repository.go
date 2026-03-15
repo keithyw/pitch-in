@@ -15,6 +15,7 @@ type UserRepository interface {
 	DetachRole(roleID, userID int64) error
 	DeleteUser(userId int64) error
 	FindUsersBy(filter repository.Filter) ([]User, error)
+	GetPermissionsByUserId(userId int64) ([]string, error)
 	GetRolesByUserId(userId int64) ([]roles.Role, error)
 	GetUser(userId int64) (*User, error)
 	GetUserByEmail (email string) (*User, error)
@@ -60,6 +61,32 @@ func (r *UserRepositoryImpl) FindUsersBy(filter repository.Filter) ([]User, erro
 	var users []User
 	err := r.store.FindBy(&User{}, filter, &users)
 	return users, err
+}
+
+func (r *UserRepositoryImpl) GetPermissionsByUserId(userId int64) ([]string, error) {
+	var perms []string
+	builder := sq.Select("DISTINCT p.code").
+		From("user_roles ur").
+		Join("role_permissions rp ON rp.role_id = ur.role_id").
+		Join("permissions p ON rp.permission_id").
+		Where(sq.Eq{"ur.user_id": userId}).
+		PlaceholderFormat(sq.Question)
+
+	rows, err := r.store.GetClient().QueryMany(builder)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var p string
+		if err := rows.Scan(&p); err != nil {
+			return nil, err
+		}
+		perms = append(perms, p)
+	}
+
+	return perms, nil
 }
 
 func (r *UserRepositoryImpl) GetRolesByUserId(userId int64) ([]roles.Role, error) {

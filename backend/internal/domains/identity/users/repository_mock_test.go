@@ -40,6 +40,12 @@ func (m *MockUserRepository) FindUsersBy(filter repository.Filter) ([]User, erro
 	return args.Get(0).([]User), args.Error(1)
 }
 
+func (m *MockUserRepository) GetPermissionsByUserId(userId int64) ([]string, error) {
+	args := m.Called(userId)
+	if args.Get(0) == nil { return nil, args.Error(1) }
+	return args.Get(0).([]string), args.Error(1)
+}
+
 func (m *MockUserRepository) GetRolesByUserId(userId int64) ([]roles.Role, error) {
 	args := m.Called(userId)
 	if args.Get(0) == nil { return nil, args.Error(1) }

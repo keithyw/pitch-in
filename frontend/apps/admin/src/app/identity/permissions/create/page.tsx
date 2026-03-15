@@ -1,16 +1,13 @@
 'use client'
 
-import {
-	CreateFormLayout,
-	FormInput,
-	PermissionGuard,
-} from '@pitch-in/shared/components'
+import { CreateFormLayout, FormInput } from '@pitch-in/shared/components'
 import { useCreateRecord } from '@pitch-in/shared/hooks'
 import {
 	permissionCreateSchema,
 	PermissionCreateFormData,
 } from '@pitch-in/shared/schemas'
-import { FormField, Permission } from '@pitch-in/shared/types'
+import { IDENTITY_WRITE } from '@pitch-in/shared/constants'
+import { FormField } from '@pitch-in/shared/types'
 import { PermissionAPI } from '@/lib/clients/api'
 import { PERMISSIONS_URL } from '@/lib'
 
@@ -59,24 +56,23 @@ const CreatePermissionPage = () => {
 	})
 
 	return (
-		<PermissionGuard>
-			<CreateFormLayout
-				title='Create Permission'
-				isSubmitting={isSubmitting}
-				submitText='Create'
-				submittingText='Creating...'
-				handleSubmit={onSubmit}
-			>
-				{fields.map((f, idx) => (
-					<FormInput
-						key={idx}
-						field={f}
-						register={register}
-						errorMessage={errors[f.name]?.message as string}
-					/>
-				))}
-			</CreateFormLayout>
-		</PermissionGuard>
+		<CreateFormLayout
+			title='Create Permission'
+			isSubmitting={isSubmitting}
+			submitText='Create'
+			submittingText='Creating...'
+			handleSubmit={onSubmit}
+			requiredPermission={IDENTITY_WRITE}
+		>
+			{fields.map((f, idx) => (
+				<FormInput
+					key={idx}
+					field={f}
+					register={register}
+					errorMessage={errors[f.name]?.message as string}
+				/>
+			))}
+		</CreateFormLayout>
 	)
 }
 

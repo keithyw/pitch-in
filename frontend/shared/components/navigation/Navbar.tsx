@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Container, NavbarLink } from '@pitch-in/shared/components'
+import { NavbarLink } from '@pitch-in/shared/components'
 import { cn } from '@pitch-in/shared/utils'
 
 export interface NavLinkItem {

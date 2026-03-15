@@ -8,6 +8,7 @@ import {
 	DetailSectionRow,
 	ViewDetailsTable,
 } from '@pitch-in/shared/components'
+import { IDENTITY_READ, IDENTITY_WRITE } from '@pitch-in/shared/constants'
 import { Permission, Role, TableColumn } from '@pitch-in/shared/types'
 import { failedLoadingError } from '@pitch-in/shared/utils'
 import { useDetailsController, useDualListController } from '@pitch-in/shared'
@@ -109,6 +110,8 @@ const RoleDetailsPage = () => {
 			isConfirmationModalOpen={detailsController.isConfirmationModalOpen}
 			setIsConfirmationModalOpen={detailsController.setIsConfirmationModalOpen}
 			error={detailsController.error}
+			viewPermission={IDENTITY_READ}
+			writePermission={IDENTITY_WRITE}
 			buttons={
 				<Button actionType='view' onClick={() => setIsDrawerOpen(true)}>
 					Manage Permissions

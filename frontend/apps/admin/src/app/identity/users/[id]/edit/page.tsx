@@ -3,6 +3,7 @@
 import { useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import { EditFormLayout } from '@pitch-in/shared/components'
+import { IDENTITY_WRITE } from '@pitch-in/shared/constants'
 import { useEditRecord } from '@pitch-in/shared/hooks'
 import { userCreateSchema, UserCreateFormData } from '@pitch-in/shared/schemas'
 import { FormField, User } from '@pitch-in/shared/types'
@@ -84,7 +85,7 @@ const EditUserPage = () => {
 
 	return (
 		<EditFormLayout
-			permission=''
+			permission={IDENTITY_WRITE}
 			item={user as User}
 			title='Edit User'
 			fields={fields}

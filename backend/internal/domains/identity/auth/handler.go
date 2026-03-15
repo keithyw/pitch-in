@@ -21,10 +21,18 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required,min=6,max=72"`
 }
 
+type AuthUser struct {
+	ID int64 `json:"id"`
+	Username string `json:"username"`
+	Roles []string `json:"roles"`
+	Permissions []string `json:"permissions"`
+
+}
+
 type LoginResponse struct {
 	Token string `json:"token"`
 	Refresh string `json:"refresh"`
-	User *users.User `json:"user"`
+	User *AuthUser `json:"user"`
 }
 
 type RefreshRequest struct {
@@ -77,10 +85,23 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request, req LoginReq
 		return
 	}
 
+	permissions, err := h.svc.GetPermissionsByUserId(user.ID)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Could not get permissions: %s", err.Error()))
+		return
+	}
+
+	authUser := AuthUser{
+		ID: user.ID,
+		Username: *user.Username,
+		Roles: roles,
+		Permissions: permissions,
+	}
+
 	response.JSON(w, http.StatusOK, LoginResponse{
 		Refresh: refreshToken,
 		Token: token,
-		User: user,
+		User: &authUser,
 	})
 }
 

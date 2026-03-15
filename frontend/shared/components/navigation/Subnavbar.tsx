@@ -17,7 +17,7 @@ export const Subnavbar = ({ links }: SubnavbarProps) => {
 	return (
 		<nav className='flex items-center space-x-6'>
 			{links.map((l, idx) => (
-				<PermissionGuard key={idx}>
+				<PermissionGuard key={idx} requiredPermission={l.permission}>
 					<Link
 						href={`${l.href}`}
 						className='font-medium text-blue-600 transition-colors hover:text-blue-600'

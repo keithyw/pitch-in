@@ -14,6 +14,7 @@ type UserService interface {
 	DeleteUser(userId int64) error
 	DetachRole(roleID, userID int64) error
 	FindUserBy(filter repository.Filter) ([]User, error)
+	GetPermissionsByUserId(userId int64) ([]string, error)
 	GetUser(userId int64) (*User, error)
 	GetUserByEmail(email string) (*User, error)
 	UpdateUser(user User) (*User, error)
@@ -83,6 +84,15 @@ func (s *userServiceImpl) FindUserBy(filter repository.Filter) ([]User, error) {
 		return nil, fmt.Errorf("Find users by error: %w", err)
 	}
 	return users, nil
+}
+
+func (s *userServiceImpl) GetPermissionsByUserId(userId int64) ([]string, error) {
+	perms, err := s.repository.GetPermissionsByUserId(userId)
+	if err != nil {
+		s.log.Error("Failed getting permissions by user", "userId", userId, "error", err)
+		return nil, fmt.Errorf("Get permissions by userId error: %w", err)
+	}
+	return perms, err
 }
 
 func (s *userServiceImpl) GetUser(userId int64) (*User, error) {

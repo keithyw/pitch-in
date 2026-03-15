@@ -1,5 +1,4 @@
 'use client'
-
 export interface PermissionCheck {
 	// Permission-based checks
 	requiredPermission?: string

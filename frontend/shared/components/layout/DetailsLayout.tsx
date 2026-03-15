@@ -26,6 +26,8 @@ interface DetailsLayoutProps<T> {
 	buttons?: React.ReactNode
 	children?: React.ReactNode
 	popups?: React.ReactNode
+	viewPermission?: string
+	writePermission?: string
 }
 
 export const DetailsLayout = <T extends HasId>({
@@ -41,6 +43,8 @@ export const DetailsLayout = <T extends HasId>({
 	buttons,
 	children,
 	popups,
+	viewPermission,
+	writePermission,
 }: DetailsLayoutProps<T>) => {
 	if (isLoading) {
 		return <SpinnerSection spinnerMessage='Loading details...' />
@@ -51,34 +55,36 @@ export const DetailsLayout = <T extends HasId>({
 	}
 
 	return (
-		<div className='p-4'>
-			<div className='mx-auto max-w-2xl bg-white p-8 shadow-md'>
-				<PageTitle>{title}</PageTitle>
-				{item && <DetailSection rows={details} />}
-				{children}
-				<PermissionGuard>
-					<div className='mt-6 flex justify-end space-x-3'>
-						{buttons}
-						<Button actionType='edit' onClick={handleEditClick}>
-							Edit
-						</Button>
-						<Button
-							actionType='delete'
-							onClick={() => setIsConfirmationModalOpen(true)}
-						>
-							Delete
-						</Button>
-					</div>
-				</PermissionGuard>
+		<PermissionGuard requiredPermission={viewPermission}>
+			<div className='p-4'>
+				<div className='mx-auto max-w-2xl bg-white p-8 shadow-md'>
+					<PageTitle>{title}</PageTitle>
+					{item && <DetailSection rows={details} />}
+					{children}
+					<PermissionGuard requiredPermission={writePermission}>
+						<div className='mt-6 flex justify-end space-x-3'>
+							{buttons}
+							<Button actionType='edit' onClick={handleEditClick}>
+								Edit
+							</Button>
+							<Button
+								actionType='delete'
+								onClick={() => setIsConfirmationModalOpen(true)}
+							>
+								Delete
+							</Button>
+						</div>
+					</PermissionGuard>
+				</div>
+				<ConfirmationModal
+					isOpen={isConfirmationModalOpen}
+					onClose={() => setIsConfirmationModalOpen(false)}
+					onConfirm={handleDeleteConfirm}
+					title='Confirm Deletion'
+					message='Are you sure you want to delete this item?'
+				/>
+				{popups}
 			</div>
-			<ConfirmationModal
-				isOpen={isConfirmationModalOpen}
-				onClose={() => setIsConfirmationModalOpen(false)}
-				onConfirm={handleDeleteConfirm}
-				title='Confirm Deletion'
-				message='Are you sure you want to delete this item?'
-			/>
-			{popups}
-		</div>
+		</PermissionGuard>
 	)
 }

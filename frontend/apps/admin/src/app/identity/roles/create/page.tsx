@@ -1,13 +1,10 @@
 'use client'
 
-import {
-	CreateFormLayout,
-	FormInput,
-	PermissionGuard,
-} from '@pitch-in/shared/components'
+import { CreateFormLayout, FormInput } from '@pitch-in/shared/components'
+import { IDENTITY_WRITE } from '@pitch-in/shared/constants'
 import { useCreateRecord } from '@pitch-in/shared/hooks'
 import { roleCreateSchema, RoleCreateFormData } from '@pitch-in/shared/schemas'
-import { FormField, Role } from '@pitch-in/shared/types'
+import { FormField } from '@pitch-in/shared/types'
 import { RoleAPI } from '@/lib/clients/api'
 import { ROLES_URL } from '@/lib'
 
@@ -41,24 +38,23 @@ const CreateRolePage = () => {
 		redirectUrl: ROLES_URL,
 	})
 	return (
-		<PermissionGuard>
-			<CreateFormLayout
-				title='Create Role'
-				isSubmitting={isSubmitting}
-				submitText='Create'
-				submittingText='Creating...'
-				handleSubmit={onSubmit}
-			>
-				{fields.map((f, idx) => (
-					<FormInput
-						key={idx}
-						field={f}
-						register={register}
-						errorMessage={errors[f.name]?.message as string}
-					/>
-				))}
-			</CreateFormLayout>
-		</PermissionGuard>
+		<CreateFormLayout
+			title='Create Role'
+			isSubmitting={isSubmitting}
+			submitText='Create'
+			submittingText='Creating...'
+			handleSubmit={onSubmit}
+			requiredPermission={IDENTITY_WRITE}
+		>
+			{fields.map((f, idx) => (
+				<FormInput
+					key={idx}
+					field={f}
+					register={register}
+					errorMessage={errors[f.name]?.message as string}
+				/>
+			))}
+		</CreateFormLayout>
 	)
 }
 

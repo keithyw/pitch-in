@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { ListLayout } from '@pitch-in/shared/components'
+import { IDENTITY_READ, IDENTITY_WRITE } from '@pitch-in/shared/constants'
 import { useDataTableController, useDeleteRecord } from '@pitch-in/shared/hooks'
 import { TableColumn, TableRowAction, User } from '@pitch-in/shared/types'
 import { UserAPI } from '@/lib/clients/api'
@@ -75,8 +76,8 @@ const UsersPage = () => {
 	return (
 		<ListLayout
 			title='Users'
-			listPermission=''
-			createPermission=''
+			listPermission={IDENTITY_READ}
+			createPermission={IDENTITY_WRITE}
 			createUrl={CREATE_USERS_URL}
 			createText='Create New User'
 			data={tableController.data}
