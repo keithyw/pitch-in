@@ -8,13 +8,14 @@ import {
 	roleService,
 	userService,
 } from '@pitch-in/shared/services'
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib'
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, LOGIN_URL } from '@/lib/constants'
 import useAuthStore from '@/stores/useAuthStore'
 
 const api = createAxiosClient({
 	baseUrl: process.env.NEXT_PUBLIC_API_URL,
 	refreshUrl: API_REFRESH_URL,
 	authUrls: [API_LOGIN_URL, API_REFRESH_URL],
+	redirectUrl: LOGIN_URL,
 	getToken: () => localStorage.getItem(ACCESS_TOKEN_KEY),
 	getRefreshToken: () => localStorage.getItem(REFRESH_TOKEN_KEY),
 	onRefreshSuccess: (res: RefreshResponse) => {

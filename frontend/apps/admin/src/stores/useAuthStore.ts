@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { RefreshResponse, AuthUser } from '@pitch-in/shared/types'
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib'
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib/constants'
 
 const USER_DATA_KEY = 'user_data'
 
@@ -8,7 +8,9 @@ interface AuthStore {
 	accessToken: string
 	refreshToken: string
 	isAuthenticated: boolean
+	isLoading: boolean
 	user: AuthUser
+	checkIfAuthenticated: () => void
 	hasPermission: (code: string) => boolean
 	hasAnyPermission: (codes: string[]) => boolean
 	hasRole: (role: string) => boolean
@@ -22,11 +24,33 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 	accessToken: '',
 	refreshToken: '',
 	isAuthenticated: false,
+	isLoading: true,
 	user: {
 		id: 0,
 		username: '',
 		roles: [],
 		permissions: [],
+	},
+	checkIfAuthenticated: (): void => {
+		set({ isLoading: true })
+		const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
+		const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+
+		if (accessToken && refreshToken) {
+			const user = localStorage.getItem(USER_DATA_KEY)
+			set({
+				accessToken,
+				refreshToken,
+				isAuthenticated: true,
+				isLoading: false,
+				user: user ? JSON.parse(user) : null,
+			})
+		} else {
+			set({
+				isAuthenticated: false,
+				isLoading: false,
+			})
+		}
 	},
 	hasPermission: (code: string): boolean => {
 		const { user } = get()
@@ -49,6 +73,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 			accessToken: res.token,
 			refreshToken: res.refresh,
 			isAuthenticated: true,
+			isLoading: false,
 		})
 		localStorage.setItem(ACCESS_TOKEN_KEY, res.token)
 		localStorage.setItem(REFRESH_TOKEN_KEY, res.refresh)
@@ -58,6 +83,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 			accessToken: '',
 			refreshToken: '',
 			isAuthenticated: false,
+			isLoading: false,
 			user: {
 				id: 0,
 				username: '',

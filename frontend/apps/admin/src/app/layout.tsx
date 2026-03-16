@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
+import AuthProvider from '@/components/layout/AuthProvider'
 import Navbar from '@/components/layout/Navbar'
 import './globals.css'
 
@@ -29,9 +30,11 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<Navbar />
-				<div>{children}</div>
-				<Toaster position='bottom-right' />
+				<AuthProvider>
+					<Navbar />
+					<div>{children}</div>
+					<Toaster position='bottom-right' />
+				</AuthProvider>
 			</body>
 		</html>
 	)

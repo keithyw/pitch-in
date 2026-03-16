@@ -7,3 +7,13 @@ export const ROLES_URL = `${IDENTITY_URL}/roles`
 export const CREATE_ROLES_URL = `${ROLES_URL}/create`
 export const USERS_URL = `${IDENTITY_URL}/users`
 export const CREATE_USERS_URL = `${USERS_URL}/create`
+
+export const PROTECTED_ROUTES = [
+	DASHBOARD_URL,
+	IDENTITY_URL,
+	PERMISSIONS_URL,
+	ROLES_URL,
+	USERS_URL,
+]
+
+export const PUBLIC_ROUTES = [LOGIN_URL]
