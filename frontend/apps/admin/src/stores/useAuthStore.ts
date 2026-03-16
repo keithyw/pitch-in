@@ -1,5 +1,9 @@
 import { create } from 'zustand'
-import { RefreshResponse, AuthUser } from '@pitch-in/shared/types'
+import {
+	RefreshResponse,
+	AuthUser,
+	PermissionCheck,
+} from '@pitch-in/shared/types'
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/lib/constants'
 
 const USER_DATA_KEY = 'user_data'
@@ -10,6 +14,7 @@ interface AuthStore {
 	isAuthenticated: boolean
 	isLoading: boolean
 	user: AuthUser
+	checkAccess: (checks: PermissionCheck) => boolean
 	checkIfAuthenticated: () => void
 	hasPermission: (code: string) => boolean
 	hasAnyPermission: (codes: string[]) => boolean
@@ -30,6 +35,19 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 		username: '',
 		roles: [],
 		permissions: [],
+	},
+	checkAccess: (checks: PermissionCheck): boolean => {
+		const { user, isAuthenticated } = get()
+		if (!isAuthenticated || !user) return false
+		if (user.roles?.includes('admin')) return true
+		if (
+			checks.requiredPermission &&
+			!user.permissions?.includes(checks.requiredPermission)
+		)
+			return false
+		if (checks.requiredRole && !user.roles?.includes(checks.requiredRole))
+			return false
+		return true
 	},
 	checkIfAuthenticated: (): void => {
 		set({ isLoading: true })

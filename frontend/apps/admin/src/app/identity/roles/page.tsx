@@ -45,7 +45,7 @@ const RolePage = () => {
 				router.push(`${ROLES_URL}/${r.id}`)
 			},
 			actionType: 'view',
-			requiredPermission: '',
+			requiredPermission: IDENTITY_READ,
 		},
 		{
 			label: 'Edit',
@@ -53,13 +53,13 @@ const RolePage = () => {
 				router.push(`${ROLES_URL}/${r.id}/edit`)
 			},
 			actionType: 'edit',
-			requiredPermission: '',
+			requiredPermission: IDENTITY_WRITE,
 		},
 		{
 			label: 'Delete',
 			onClick: deleteController.openDeleteModal,
 			actionType: 'delete',
-			requiredPermission: '',
+			requiredPermission: IDENTITY_WRITE,
 		},
 	]
 

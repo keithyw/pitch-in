@@ -30,9 +30,7 @@ export interface TableRowAction<T> {
 	requiredPermission?: string
 	requiredPermissions?: string[] // Requires ALL permissions
 	anyPermission?: string[] // Requires ANY of these permissions
-	requiredGroup?: string
-	requiredGroups?: string[] // Requires ALL groups
-	anyGroup?: string[] // Requires ANY of these groups
-	requireStaff?: boolean
-	requireActive?: boolean
+	requiredRole?: string
+	requiredRoles?: string[] // Requires ALL groups
+	anyRole?: string[] // Requires ANY of these groups
 }

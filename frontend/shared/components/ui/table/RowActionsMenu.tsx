@@ -15,7 +15,7 @@ import {
 	UserGroupIcon,
 } from '@heroicons/react/24/outline'
 import type { TableRowAction, TableRowActionType } from '@pitch-in/shared/types'
-import { usePermissions } from '@pitch-in/shared/hooks'
+import { useSharedPermissions } from '@pitch-in/shared/contexts'
 
 const ICON_MAP: Record<TableRowActionType, React.ReactNode> = {
 	view: <EyeIcon className='mr-2 h-5 w-5' />,
@@ -35,7 +35,7 @@ export function RowActionsMenu<T>({
 }) {
 	const [openUpwards, setOpenUpwards] = React.useState(false)
 	const buttonRef = React.useRef<HTMLButtonElement>(null)
-	const { checkAccess } = usePermissions()
+	const { checkAccess } = useSharedPermissions()
 
 	const handleOpen = () => {
 		if (buttonRef.current) {
@@ -56,11 +56,9 @@ export function RowActionsMenu<T>({
 			!action.requiredPermission &&
 			!action.requiredPermissions &&
 			!action.anyPermission &&
-			!action.requiredGroup &&
-			!action.requiredGroups &&
-			!action.anyGroup &&
-			!action.requireStaff &&
-			!action.requireActive
+			!action.requiredRole &&
+			!action.requiredRoles &&
+			!action.anyRole
 		) {
 			return true
 		}
@@ -70,11 +68,9 @@ export function RowActionsMenu<T>({
 			requiredPermission: action.requiredPermission,
 			requiredPermissions: action.requiredPermissions,
 			anyPermission: action.anyPermission,
-			requiredGroup: action.requiredGroup,
-			requiredGroups: action.requiredGroups,
-			anyGroup: action.anyGroup,
-			requireStaff: action.requireStaff,
-			requireActive: action.requireActive,
+			requiredRole: action.requiredRole,
+			requiredRoles: action.requiredRoles,
+			anyRole: action.anyRole,
 		})
 	})
 

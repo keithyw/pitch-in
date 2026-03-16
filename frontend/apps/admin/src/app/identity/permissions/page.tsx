@@ -50,7 +50,7 @@ const PermissionsPage = () => {
 				router.push(`${PERMISSIONS_URL}/${p.id}`)
 			},
 			actionType: 'view',
-			requiredPermission: '',
+			requiredPermission: IDENTITY_READ,
 		},
 		{
 			label: 'Edit',
@@ -58,13 +58,13 @@ const PermissionsPage = () => {
 				router.push(`${PERMISSIONS_URL}/${p.id}/edit`)
 			},
 			actionType: 'edit',
-			requiredPermission: '',
+			requiredPermission: IDENTITY_WRITE,
 		},
 		{
 			label: 'Delete',
 			onClick: deleteController.openDeleteModal,
 			actionType: 'delete',
-			requiredPermission: '',
+			requiredPermission: IDENTITY_WRITE,
 		},
 	]
 
