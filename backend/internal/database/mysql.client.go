@@ -11,6 +11,7 @@ import (
 )
 
 type DBClient interface {
+	Ping() error
 	Get(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
 	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 	Query(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error
@@ -41,6 +42,10 @@ func NewDBClient(config *config.Config) (DBClient, error) {
 		config: config,
 		DB: db,
 	}, nil
+}
+
+func (s *DBClientImpl) Ping() error {
+	return s.DB.Ping()
 }
 
 func (s *DBClientImpl) Get(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error {

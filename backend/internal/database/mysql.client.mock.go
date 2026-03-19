@@ -12,6 +12,11 @@ type MockDBClient struct {
 	mock.Mock
 }
 
+func (m *MockDBClient) Ping() error {
+	args := m.Called()
+	return args.Error(0)
+}
+
 func (m *MockDBClient) Get(ctx context.Context, builder squirrel.Sqlizer, dest interface{}) error {
 	args := m.Called(ctx, builder, dest)
 	return args.Error(0)

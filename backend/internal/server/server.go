@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/keithyw/pitch-in/internal/config"
 	"github.com/keithyw/pitch-in/internal/database"
+	"github.com/keithyw/pitch-in/internal/domains/assets"
 	"github.com/keithyw/pitch-in/internal/domains/identity/auth"
 	"github.com/keithyw/pitch-in/internal/domains/identity/permissions"
 	"github.com/keithyw/pitch-in/internal/domains/identity/roles"
@@ -14,15 +15,17 @@ import (
 	mid "github.com/keithyw/pitch-in/internal/middleware"
 	"github.com/keithyw/pitch-in/pkg/jwt"
 	"github.com/keithyw/pitch-in/pkg/middleware"
+	"github.com/keithyw/pitch-in/pkg/storage"
 )
 
-func NewServer(cfg *config.Config, store database.DBStore, log *slog.Logger) http.Handler {
+func NewServer(cfg *config.Config, store database.DBStore, client storage.StorageClient, log *slog.Logger) http.Handler {
 	jwtService := jwt.NewJWTService(cfg.JWTSecretKey, cfg.JWTExpirationTime, log)
 	middlewareService := mid.NewMiddlewareService(mid.NewMiddlewareRepository(store), log)
 	authorization := mid.NewAuthorizationMiddleware(middlewareService)
 	r := chi.NewRouter()
 	r.Use(middleware.Cors)
 	r.Mount("/auth", auth.Initialize(store, jwtService, log))
+	r.Mount("/assets", assets.Initialize(client, store, jwtService, authorization, log))
 	r.Mount("/permissions", permissions.Initialize(store, jwtService, authorization, log))
 	r.Mount("/roles", roles.Initialize(store, jwtService, authorization, log))
 	r.Mount("/users", users.Initialize(store, jwtService, authorization, log))

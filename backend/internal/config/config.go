@@ -10,6 +10,7 @@ type Config struct {
 	MysqlUser string
 	MysqlPass string
 	MysqlHost string
+	MysqlPort string
 	MysqlDB string
 	JWTExpirationTime int
 	JWTSecretKey string
@@ -25,6 +26,7 @@ func NewConfig() *Config {
 		MysqlUser: os.Getenv("MYSQL_USER"),
 		MysqlPass: os.Getenv("MYSQL_PASS"),
 		MysqlHost: os.Getenv("MYSQL_HOST"),
+		MysqlPort: os.Getenv("MYSQL_PORT"),
 		MysqlDB: os.Getenv("MYSQL_DATABASE"),
 		JWTExpirationTime: exp,
 		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
