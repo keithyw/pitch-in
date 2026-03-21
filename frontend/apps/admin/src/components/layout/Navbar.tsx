@@ -6,18 +6,23 @@ import {
 	Navbar as SharedNavbar,
 	NavLinkItem,
 } from '@pitch-in/shared/components'
+import { ASSETS_READ, IDENTITY_READ } from '@pitch-in/shared/constants'
 import ProfileDropdown from '@/components/layout/ProfileDropdown'
-import { DASHBOARD_URL, IDENTITY_URL, LOGIN_URL } from '@/lib/constants'
+import {
+	ASSETS_URL,
+	DASHBOARD_URL,
+	IDENTITY_URL,
+	LOGIN_URL,
+} from '@/lib/constants'
 import useAuthStore from '@/stores/useAuthStore'
 
 const ADMIN_LINKS: NavLinkItem[] = [
-	{ label: 'Dashboard', href: DASHBOARD_URL, permission: '' },
-	{ label: 'Identity', href: IDENTITY_URL, permission: '' },
-	{ label: 'Images', href: 'blah2', permission: '' },
+	{ label: 'Dashboard', href: DASHBOARD_URL, permission: IDENTITY_READ },
+	{ label: 'Assets', href: ASSETS_URL, permission: ASSETS_READ },
+	{ label: 'Identity', href: IDENTITY_URL, permission: IDENTITY_READ },
 ]
 
 export default function Navbar() {
-	// placeholder
 	const { isAuthenticated } = useAuthStore()
 
 	return (

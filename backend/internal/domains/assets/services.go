@@ -51,14 +51,14 @@ func (s *assetServiceImpl) CreateAsset(asset Asset, reader io.Reader) (*Asset, e
 		return nil, fmt.Errorf("Failed to read file: %w", err)
 	}
 
-	deetectedType := http.DetectContentType(buffer[:n])
-	asset.MimeType = &deetectedType
+	detectedType := http.DetectContentType(buffer[:n])
+	asset.MimeType = &detectedType
 
 	fullReader := io.MultiReader(bytes.NewReader(buffer[:n]), reader)
 
 	res, err := s.client.Put(fullReader, *asset.ObjectKey, *asset.MimeType)
 	if err != nil {
-		s.log.Error("Failed uploading asset", "object_key", asset.ObjectKey, "error", err)
+		s.log.Error("Failed uploading asset", "object_key", *asset.ObjectKey, "error", err)
 		return nil, fmt.Errorf("asset upload failure: %w", err)
 	}
 	asset.SizeBytes = &res.Size

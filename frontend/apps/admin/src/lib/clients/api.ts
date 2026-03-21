@@ -4,6 +4,7 @@ import { RefreshResponse } from '@pitch-in/shared/types'
 import {
 	ServiceFactory,
 	authService,
+	assetService,
 	permissionService,
 	roleService,
 	userService,
@@ -30,6 +31,7 @@ const api = createAxiosClient({
 const factory = new ServiceFactory(api)
 
 export const AuthAPI = factory.create(authService)
+export const AssetAPI = factory.create(assetService)
 export const PermissionAPI = factory.create(permissionService)
 export const RoleAPI = factory.create(roleService)
 export const UserAPI = factory.create(userService)

@@ -1,6 +1,7 @@
 export * from './Button'
 export * from './CancelButton'
 export * from './CheckboxInput'
+export * from './FileUploadInput'
 export * from './FormInput'
 export * from './InputErrorMessage'
 export * from './SearchInput'

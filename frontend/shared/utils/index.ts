@@ -1,3 +1,5 @@
 export * from './api'
 export * from './cn'
 export * from './errorHandler'
+export * from './file'
+export * from './image'

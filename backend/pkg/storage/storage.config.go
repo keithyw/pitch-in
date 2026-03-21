@@ -1,6 +1,9 @@
 package storage
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
 
 type StorageConfig struct {
 	Endpoint string
@@ -13,11 +16,12 @@ type StorageConfig struct {
 
 func NewStorageConfig() *StorageConfig {
 	// todo: get away from env vars
+	useSSL, _ := strconv.ParseBool(os.Getenv("STORAGE_USE_SSL"))	
 	return &StorageConfig{
 		Endpoint: os.Getenv("S3_ENDPOINT"),
 		AccessKeyID: os.Getenv("S3_ACCESS_KEY"),
 		SecretAccessKey: os.Getenv("S3_SECRET_KEY"),
-		UseSSL: true,
+		UseSSL: useSSL,
 		Bucket: os.Getenv("S3_BUCKET"),
 		Region: os.Getenv("STORAGE_REGION"),
 	}

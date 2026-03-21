@@ -27,6 +27,7 @@ export const DetailSection = ({ rows }: DetailSectionProps) => {
 									url={row.value}
 									type={row?.type || 'image'}
 									alt={row.label || 'Asset preview'}
+									size='lg'
 								/>
 							) : row.value ? (
 								row.value

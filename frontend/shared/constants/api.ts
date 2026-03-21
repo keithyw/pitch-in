@@ -1,5 +1,6 @@
 export const API_LOGIN_URL = '/auth/login'
 export const API_REFRESH_URL = '/auth/refresh'
+export const API_ASSETS_URL = '/assets'
 export const API_PERMISSIONS_URL = '/permissions'
 export const API_ROLES_URL = '/roles'
 export const API_USERS_URL = '/users'
