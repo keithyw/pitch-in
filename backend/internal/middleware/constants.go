@@ -5,4 +5,6 @@ const (
 	AssetWrite = "asset:write"
 	IdentityRead = "identity:read"
 	IdentityWrite = "identity:write"
+	ContentRead = "content:read"
+	ContentWrite = "content:write"
 )

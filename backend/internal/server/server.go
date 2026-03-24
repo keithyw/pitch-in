@@ -12,6 +12,7 @@ import (
 	"github.com/keithyw/pitch-in/internal/domains/identity/permissions"
 	"github.com/keithyw/pitch-in/internal/domains/identity/roles"
 	"github.com/keithyw/pitch-in/internal/domains/identity/users"
+	"github.com/keithyw/pitch-in/internal/domains/taxonomy/tags"
 	mid "github.com/keithyw/pitch-in/internal/middleware"
 	"github.com/keithyw/pitch-in/pkg/jwt"
 	"github.com/keithyw/pitch-in/pkg/middleware"
@@ -28,6 +29,7 @@ func NewServer(cfg *config.Config, store database.DBStore, client storage.Storag
 	r.Mount("/assets", assets.Initialize(client, store, jwtService, authorization, log))
 	r.Mount("/permissions", permissions.Initialize(store, jwtService, authorization, log))
 	r.Mount("/roles", roles.Initialize(store, jwtService, authorization, log))
+	r.Mount("/tags", tags.Initialize(store, jwtService, authorization, log))
 	r.Mount("/users", users.Initialize(store, jwtService, authorization, log))
 
 	return r
