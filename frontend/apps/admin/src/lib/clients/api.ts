@@ -5,6 +5,7 @@ import {
 	ServiceFactory,
 	authService,
 	assetService,
+	itemService,
 	permissionService,
 	roleService,
 	tagService,
@@ -33,6 +34,7 @@ const factory = new ServiceFactory(api)
 
 export const AuthAPI = factory.create(authService)
 export const AssetAPI = factory.create(assetService)
+export const ItemAPI = factory.create(itemService)
 export const PermissionAPI = factory.create(permissionService)
 export const RoleAPI = factory.create(roleService)
 export const TagAPI = factory.create(tagService)

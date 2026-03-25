@@ -14,8 +14,10 @@ import {
 import ProfileDropdown from '@/components/layout/ProfileDropdown'
 import {
 	ASSETS_URL,
+	CONTENT_URL,
 	DASHBOARD_URL,
 	IDENTITY_URL,
+	ITEMS_URL,
 	TAXONOMY_URL,
 	LOGIN_URL,
 } from '@/lib/constants'
@@ -24,6 +26,7 @@ import useAuthStore from '@/stores/useAuthStore'
 const ADMIN_LINKS: NavLinkItem[] = [
 	{ label: 'Dashboard', href: DASHBOARD_URL, permission: IDENTITY_READ },
 	{ label: 'Assets', href: ASSETS_URL, permission: ASSETS_READ },
+	{ label: 'Content', href: CONTENT_URL, permission: CONTENT_READ },
 	{ label: 'Identity', href: IDENTITY_URL, permission: IDENTITY_READ },
 	{ label: 'Taxonomy', href: TAXONOMY_URL, permission: CONTENT_READ },
 ]

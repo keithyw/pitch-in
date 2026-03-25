@@ -1,0 +1,11 @@
+import { z } from 'zod'
+
+export const itemCreateSchema = z.object({
+	name: z
+		.string()
+		.min(3, 'Name must be at least 3 characters long')
+		.max(255, 'Name cannot exceed 255 characters'),
+	description: z.string().optional().or(z.literal('')),
+})
+
+export type ItemCreateFormData = z.infer<typeof itemCreateSchema>

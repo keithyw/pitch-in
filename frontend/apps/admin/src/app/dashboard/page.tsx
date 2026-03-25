@@ -1,4 +1,5 @@
 import {
+	DocumentTextIcon,
 	IdentificationIcon,
 	PhotoIcon,
 	RectangleGroupIcon,
@@ -7,6 +8,7 @@ import { DashboardGrid } from '@pitch-in/shared/components'
 import { DashboardCardProps } from '@pitch-in/shared/types'
 import {
 	ASSETS_URL,
+	CONTENT_URL,
 	DASHBOARD_WRAPPER,
 	ICON_CLASS,
 	IDENTITY_URL,
@@ -20,6 +22,12 @@ const DashboardPage = () => {
 			description: 'Manage Assets',
 			icon: <PhotoIcon className={ICON_CLASS} />,
 			link: ASSETS_URL,
+		},
+		{
+			title: 'Content',
+			description: 'Manage Content',
+			icon: <DocumentTextIcon className={ICON_CLASS} />,
+			link: CONTENT_URL,
 		},
 		{
 			title: 'Identity',

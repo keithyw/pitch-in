@@ -3,6 +3,7 @@ package items
 import (
 	"log/slog"
 
+	"github.com/gosimple/slug"
 	"github.com/keithyw/pitch-in/pkg/repository"
 )
 
@@ -37,6 +38,8 @@ func (s *itemServiceImpl) CountItems(filter repository.Filter) (int64, error) {
 }
 
 func (s *itemServiceImpl) CreateItem(item Item) (*Item, error) {
+	slug := slug.Make(*item.Name)
+	item.Slug = &slug
 	newTag, err := s.repository.CreateItem(item)
 	if err != nil {
 		s.log.Error("Failed creating new item", "item", item.Name, "error", err)
@@ -73,6 +76,8 @@ func (s *itemServiceImpl) GetItem(id int64) (*Item, error) {
 }
 
 func (s *itemServiceImpl) UpdateItem(item Item) (*Item, error) {
+	slug := slug.Make(*item.Name)
+	item.Slug = &slug
 	updatedItem, err := s.repository.UpdateItem(item)
 	if err != nil {
 		s.log.Error("Failed updating item", "id", item.ID, "error", err)

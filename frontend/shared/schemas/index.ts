@@ -1,4 +1,5 @@
 export * from './assetSchema'
+export * from './itemSchema'
 export * from './permissionSchema'
 export * from './roleSchema'
 export * from './tagSchema'

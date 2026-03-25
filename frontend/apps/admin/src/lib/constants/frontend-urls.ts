@@ -3,6 +3,9 @@ export const IDENTITY_URL = '/identity'
 export const LOGIN_URL = '/login'
 export const ASSETS_URL = '/assets'
 export const CREATE_ASSET_URL = `${ASSETS_URL}/create`
+export const CONTENT_URL = '/content'
+export const ITEMS_URL = `${CONTENT_URL}/items`
+export const CREATE_ITEM_URL = `${ITEMS_URL}/create`
 export const PERMISSIONS_URL = `${IDENTITY_URL}/permissions`
 export const CREATE_PERMISSIONS_URL = `${PERMISSIONS_URL}/create`
 export const ROLES_URL = `${IDENTITY_URL}/roles`
@@ -16,6 +19,8 @@ export const CREATE_TAG_URL = `${TAGS_URL}/create`
 export const PROTECTED_ROUTES = [
 	ASSETS_URL,
 	DASHBOARD_URL,
+	CONTENT_URL,
+	ITEMS_URL,
 	IDENTITY_URL,
 	PERMISSIONS_URL,
 	ROLES_URL,

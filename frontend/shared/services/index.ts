@@ -1,6 +1,7 @@
 export * from './factory'
 export * from './asset'
 export * from './auth'
+export * from './item'
 export * from './permission'
 export * from './role'
 export * from './tag'
