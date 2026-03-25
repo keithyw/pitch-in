@@ -8,6 +8,7 @@ import (
 	"github.com/keithyw/pitch-in/internal/config"
 	"github.com/keithyw/pitch-in/internal/database"
 	"github.com/keithyw/pitch-in/internal/domains/assets"
+	"github.com/keithyw/pitch-in/internal/domains/content/items"
 	"github.com/keithyw/pitch-in/internal/domains/identity/auth"
 	"github.com/keithyw/pitch-in/internal/domains/identity/permissions"
 	"github.com/keithyw/pitch-in/internal/domains/identity/roles"
@@ -27,6 +28,7 @@ func NewServer(cfg *config.Config, store database.DBStore, client storage.Storag
 	r.Use(middleware.Cors)
 	r.Mount("/auth", auth.Initialize(store, jwtService, log))
 	r.Mount("/assets", assets.Initialize(client, store, jwtService, authorization, log))
+	r.Mount("/items", items.Initialize(store, jwtService, authorization, log))
 	r.Mount("/permissions", permissions.Initialize(store, jwtService, authorization, log))
 	r.Mount("/roles", roles.Initialize(store, jwtService, authorization, log))
 	r.Mount("/tags", tags.Initialize(store, jwtService, authorization, log))

@@ -89,7 +89,7 @@ func (h *TagHandler) Patch(w http.ResponseWriter, req *http.Request, tagRequest 
 	}
 	updatedTag, err := h.svc.UpdateTag(*tagRequest.ToModel(id))
 	if err != nil {
-		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Update tag faile: %s", err.Error()))
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Update tag failed: %s", err.Error()))
 		return
 	}
 	response.JSON(w, http.StatusOK, updatedTag)
