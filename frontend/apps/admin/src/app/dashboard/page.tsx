@@ -1,4 +1,8 @@
-import { IdentificationIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import {
+	IdentificationIcon,
+	PhotoIcon,
+	RectangleGroupIcon,
+} from '@heroicons/react/24/outline'
 import { DashboardGrid } from '@pitch-in/shared/components'
 import { DashboardCardProps } from '@pitch-in/shared/types'
 import {
@@ -6,6 +10,7 @@ import {
 	DASHBOARD_WRAPPER,
 	ICON_CLASS,
 	IDENTITY_URL,
+	TAXONOMY_URL,
 } from '@/lib/constants'
 
 const DashboardPage = () => {
@@ -21,6 +26,12 @@ const DashboardPage = () => {
 			description: 'Manage Users, Roles and Permissions',
 			icon: <IdentificationIcon className={ICON_CLASS} />,
 			link: IDENTITY_URL,
+		},
+		{
+			title: 'Taxonomy',
+			description: 'Manage Tags and other Meta Data',
+			icon: <RectangleGroupIcon className={ICON_CLASS} />,
+			link: TAXONOMY_URL,
 		},
 	]
 

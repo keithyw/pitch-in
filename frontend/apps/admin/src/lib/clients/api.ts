@@ -7,6 +7,7 @@ import {
 	assetService,
 	permissionService,
 	roleService,
+	tagService,
 	userService,
 } from '@pitch-in/shared/services'
 import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, LOGIN_URL } from '@/lib/constants'
@@ -34,4 +35,5 @@ export const AuthAPI = factory.create(authService)
 export const AssetAPI = factory.create(assetService)
 export const PermissionAPI = factory.create(permissionService)
 export const RoleAPI = factory.create(roleService)
+export const TagAPI = factory.create(tagService)
 export const UserAPI = factory.create(userService)

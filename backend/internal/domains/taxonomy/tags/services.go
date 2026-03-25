@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/gosimple/slug"
 	"github.com/keithyw/pitch-in/pkg/repository"
 )
 
@@ -38,6 +39,8 @@ func (s *tagServiceImpl) CountTags(filter repository.Filter) (int64, error) {
 }
 
 func (s *tagServiceImpl) CreateTag(tag Tag) (*Tag, error) {
+	slug := slug.Make(*tag.Tag)
+	tag.Slug = &slug
 	newTag, err := s.repository.CreateTag(tag)
 	if err != nil {
 		s.log.Error("Failed creating new tag", "tag", tag.Tag, "error", err)
@@ -75,6 +78,8 @@ func (s *tagServiceImpl) GetTag(id int64) (*Tag, error) {
 
 
 func (s *tagServiceImpl) UpdateTag(tag Tag) (*Tag, error) {
+	slug := slug.Make(*tag.Tag)
+	tag.Slug = &slug
 	updatedTag, err := s.repository.UpdateTag(tag)
 	if err != nil {
 		s.log.Error("Failed updating tag", "id", tag.ID, "error", err)

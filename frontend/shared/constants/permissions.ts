@@ -1,4 +1,6 @@
 export const ASSETS_READ = 'asset:read'
 export const ASSETS_WRITE = 'asset:write'
+export const CONTENT_READ = 'content:read'
+export const CONTENT_WRITE = 'content:write'
 export const IDENTITY_READ = 'identity:read'
 export const IDENTITY_WRITE = 'identity:write'

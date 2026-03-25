@@ -9,6 +9,9 @@ export const ROLES_URL = `${IDENTITY_URL}/roles`
 export const CREATE_ROLES_URL = `${ROLES_URL}/create`
 export const USERS_URL = `${IDENTITY_URL}/users`
 export const CREATE_USERS_URL = `${USERS_URL}/create`
+export const TAXONOMY_URL = '/taxonomy'
+export const TAGS_URL = `${TAXONOMY_URL}/tags`
+export const CREATE_TAG_URL = `${TAGS_URL}/create`
 
 export const PROTECTED_ROUTES = [
 	ASSETS_URL,
@@ -17,6 +20,8 @@ export const PROTECTED_ROUTES = [
 	PERMISSIONS_URL,
 	ROLES_URL,
 	USERS_URL,
+	TAXONOMY_URL,
+	TAGS_URL,
 ]
 
 export const PUBLIC_ROUTES = [LOGIN_URL]
