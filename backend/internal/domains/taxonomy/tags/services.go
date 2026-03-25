@@ -9,11 +9,14 @@ import (
 )
 
 type TagService interface {
+	AttachEntity(entityID, tagID int64, entity string) error
 	CountTags (filter repository.Filter) (int64, error)
 	CreateTag (tag Tag) (*Tag, error)
 	DeleteTag (id int64) error
+	DetachEntity(entityID, tagID int64, entity string) error
 	FindTagsBy (filter repository.Filter) ([]Tag, error)
 	GetTag (id int64) (*Tag, error)
+	GetTagsByEntity(entityID int64, entity string) ([]Tag, error)
 	UpdateTag (tag Tag) (*Tag, error)
 }
 
@@ -27,6 +30,15 @@ func NewTagService(repo TagRepository, log *slog.Logger) TagService {
 		repository: repo,
 		log: log,
 	}
+}
+
+func (s *tagServiceImpl) AttachEntity(entityID, tagID int64, entity string) error {
+	err := s.repository.AttachEntity(entityID, tagID, entity)
+	if err != nil {
+		s.log.Error("Failed attaching entity", "entityID", entityID, "tagID", tagID, "entity", entity, "error", err)
+		return fmt.Errorf("attach entity failure: %w", err)
+	}
+	return nil
 }
 
 func (s *tagServiceImpl) CountTags(filter repository.Filter) (int64, error) {
@@ -58,6 +70,15 @@ func (s *tagServiceImpl) DeleteTag(id int64) error {
 	return nil
 }
 
+func (s *tagServiceImpl) DetachEntity(entityID, tagID int64, entity string) error {
+	err := s.repository.DetachEntity(entityID, tagID, entity)
+	if err != nil {
+		s.log.Error("Failed detaching entity", "entityID", entityID, "tagID", tagID, "entity", entity, "error", err)
+		return fmt.Errorf("detach entity failure: %w", err)
+	}
+	return nil
+}
+
 func (s *tagServiceImpl) FindTagsBy(filter repository.Filter) ([]Tag, error) {
 	tags, err := s.repository.FindTagsBy(filter)
 	if err != nil {
@@ -76,6 +97,14 @@ func (s *tagServiceImpl) GetTag(id int64) (*Tag, error) {
 	return tag, nil
 }
 
+func (s *tagServiceImpl) GetTagsByEntity(entityID int64, entity string) ([]Tag, error) {
+	tags, err := s.repository.GetTagsByEntity(entityID, entity)
+	if err != nil {
+		s.log.Error("Failed getting tags by entity", "entityID", entityID, "entity", entity, "error", err)
+		return nil, fmt.Errorf("get tags by entity error: %w", err)
+	}
+	return tags, nil
+}
 
 func (s *tagServiceImpl) UpdateTag(tag Tag) (*Tag, error) {
 	slug := slug.Make(*tag.Tag)

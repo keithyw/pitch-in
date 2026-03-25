@@ -1,6 +1,9 @@
 package items
 
-import "github.com/keithyw/pitch-in/pkg/model"
+import (
+	"github.com/keithyw/pitch-in/internal/domains/taxonomy/tags"
+	"github.com/keithyw/pitch-in/pkg/model"
+)
 
 type ItemFields struct {
 	Name *string `json:"name,omitempty" db:"name" validate:"omitempty,max=255"`
@@ -11,6 +14,7 @@ type ItemFields struct {
 type Item struct{
 	model.BaseModel
 	ItemFields
+	Tags []tags.Tag `json:"tags"`
 }
 
 type PatchItemRequest struct {

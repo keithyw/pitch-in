@@ -4,6 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/gosimple/slug"
+	"github.com/keithyw/pitch-in/internal/domains/taxonomy/tags"
 	"github.com/keithyw/pitch-in/pkg/repository"
 )
 
@@ -18,12 +19,14 @@ type ItemService interface {
 
 type itemServiceImpl struct {
 	repository ItemRepository
+	tagRepository tags.TagRepository
 	log *slog.Logger
 }
 
-func NewItemService(repo ItemRepository, log *slog.Logger) ItemService {
+func NewItemService(repo ItemRepository, tagRepo tags.TagRepository, log *slog.Logger) ItemService {
 	return &itemServiceImpl{
 		repository: repo,
+		tagRepository: tagRepo,
 		log: log,
 	}
 }
@@ -72,6 +75,14 @@ func (s *itemServiceImpl) GetItem(id int64) (*Item, error) {
 		s.log.Error("Failed getting item", "id", id, "error", err)
 		return nil, err
 	}
+
+	tags, err := s.tagRepository.GetTagsByEntity(id, "items")
+	if err != nil {
+		s.log.Error("Failed getting tags by item", "id", id, "error", err)
+		return nil, err
+	}
+
+	item.Tags = tags
 	return item, nil
 }
 

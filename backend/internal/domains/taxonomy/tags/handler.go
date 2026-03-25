@@ -11,6 +11,16 @@ import (
 	"github.com/keithyw/pitch-in/pkg/response"
 )
 
+type AttachEntityRequest struct {
+	EntityID int64 `json:"entity_id" validate:"required"`
+	Entity string `json:"entity" validate:"required"`
+}
+
+type DetachEntityRequest struct {
+	EntityID int64 `json:"entity_id" validate:"required"`
+	Entity string `json:"entity" validate:"required"`
+}
+
 type TagHandler struct {
 	svc TagService
 	log *slog.Logger
@@ -21,6 +31,20 @@ func NewTagHandler(svc TagService, log *slog.Logger) *TagHandler {
 		svc: svc,
 		log: log,
 	}
+}
+
+func (h *TagHandler) AttachEntity(w http.ResponseWriter, req *http.Request, entityRequest AttachEntityRequest) {
+	tagID, err := strconv.ParseInt(chi.URLParam(req, "tagID"), 10, 64)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to parse tagID: %s", err.Error()))
+		return
+	}
+	err = h.svc.AttachEntity(entityRequest.EntityID, tagID, entityRequest.Entity)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed to attach entity: %s", err.Error()))
+		return
+	}
+	response.JSON(w, http.StatusCreated, nil)
 }
 
 func (h *TagHandler) Delete(w http.ResponseWriter, req *http.Request) {
@@ -36,6 +60,21 @@ func (h *TagHandler) Delete(w http.ResponseWriter, req *http.Request) {
 	}
 	response.JSON(w, http.StatusNoContent, nil)
 }
+
+func (h *TagHandler) DetachEntity(w http.ResponseWriter, req *http.Request, entityRequest DetachEntityRequest) {
+	id, err := strconv.ParseInt(chi.URLParam(req, "tagID"), 10, 64)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to parse tagID: %s", err.Error()))
+		return
+	}
+	err = h.svc.DetachEntity(entityRequest.EntityID, id, entityRequest.Entity)
+	if err != nil {
+		response.ErrorJSON(w, http.StatusInternalServerError, fmt.Sprintf("Failed to detach entity: %s", err.Error()))
+		return
+	}
+	response.JSON(w, http.StatusNoContent, nil)
+}
+
 
 func (h *TagHandler) FindBy(w http.ResponseWriter, req *http.Request) {
 	p := repository.NewParser(Tag{}, h.log)
