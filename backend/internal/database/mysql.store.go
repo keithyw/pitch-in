@@ -176,7 +176,8 @@ func (s *dbStoreImpl) MakeQueryFromFilter(filter repository.Filter, q sq.SelectB
 				case ">":
 					q = q.Where(sq.Gt{k: v})
 				case "~=":
-					q = q.Where(fmt.Sprintf("MATCH (%s) AGAINST (? IN BOOLEAN MODE)", k), v)
+					q = q.Where(sq.Like{k: fmt.Sprintf("%%%s%%", v)})
+					// q = q.Where(fmt.Sprintf("MATCH (%s) AGAINST (? IN BOOLEAN MODE)", k), v)
 				case "between":
 					if vals, ok := v.([]string); ok && len(vals) == 2 {
 						q = q.Where(sq.Expr(fmt.Sprintf("%s BETWEEN ? AND ?", k), vals[0], vals[1]))

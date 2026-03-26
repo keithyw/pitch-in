@@ -8,8 +8,6 @@ interface AvailableListProps {
 }
 
 const AvailableList = ({ items, onClick }: AvailableListProps) => {
-	console.log('items: ')
-	console.log(items)
 	return (
 		<div className='max-h-full space-y-2 overflow-y-auto'>
 			{items.map((i) => (

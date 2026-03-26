@@ -1,4 +1,6 @@
 export * from './AssetPreview'
+export * from './Chip'
+export * from './ChipContainer'
 export * from './DashboardCard'
 export * from './DetailsSection'
 export * from './DualListSelector'

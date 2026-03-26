@@ -1,3 +1,4 @@
+import { Tag } from './tag'
 export interface Item {
 	id: number
 	name: string
@@ -6,6 +7,7 @@ export interface Item {
 	created_at: string
 	updated_at: string
 	deleted_at: string
+	tags: Tag[]
 }
 
 export interface CreateItemRequest {

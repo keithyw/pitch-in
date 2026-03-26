@@ -17,7 +17,7 @@ func NewTagRouter(jwtService *jwt.JWTService, h *TagHandler, am *mid.Authorizati
 	r.With(am.Authorize(mid.ContentRead)).Get("/", h.FindBy)
 	r.With(am.Authorize(mid.ContentWrite)).Post("/", middleware.DecodeAndValidate(h.Post))
 	r.With(am.Authorize(mid.ContentWrite)).Patch("/{tagID}", middleware.DecodeAndValidate(h.Patch))
-	r.With(am.Authorize(mid.ContentWrite)).Post("/tagID}/entity", middleware.DecodeAndValidate(h.AttachEntity))
-	r.With(am.Authorize(mid.ContentWrite)).Delete("/tagID}/entity", middleware.DecodeAndValidate(h.DetachEntity))
+	r.With(am.Authorize(mid.ContentWrite)).Post("/{tagID}/entity", middleware.DecodeAndValidate(h.AttachEntity))
+	r.With(am.Authorize(mid.ContentWrite)).Delete("/{tagID}/entity", middleware.DecodeAndValidate(h.DetachEntity))
 	return r
 }

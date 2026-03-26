@@ -2,17 +2,23 @@
 
 import { useCallback, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { DetailsLayout, DetailSectionRow } from '@pitch-in/shared/components'
+import {
+	Button,
+	DetailsLayout,
+	DetailSectionRow,
+} from '@pitch-in/shared/components'
 import { CONTENT_READ, CONTENT_WRITE } from '@pitch-in/shared/constants'
 import { useDetailsController } from '@pitch-in/shared'
 import { Item } from '@pitch-in/shared/types'
 import { failedLoadingError } from '@pitch-in/shared/utils'
 import { ITEMS_URL } from '@/lib/constants'
 import { ItemAPI } from '@/lib/clients/api'
+import EntityTagDrawer from '@/components/ui/drawers/EntityTagDrawer'
 
 const ItemDetailsPage = () => {
 	const params = useParams()
 	const [details, setDetails] = useState<DetailSectionRow[]>([])
+	const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
 
 	const detailsCallback = useCallback((i: Item) => {
 		setDetails([
@@ -57,6 +63,23 @@ const ItemDetailsPage = () => {
 			error={detailsController.error}
 			viewPermission={CONTENT_READ}
 			writePermission={CONTENT_WRITE}
+			buttons={
+				<Button actionType='view' onClick={() => setIsDrawerOpen(true)}>
+					Manage Tags
+				</Button>
+			}
+			popups={
+				<EntityTagDrawer
+					isLoading={detailsController.isLoading}
+					isOpen={isDrawerOpen}
+					onClose={() => {
+						setIsDrawerOpen(false)
+					}}
+					item={detailsController.data as Item}
+					itemTags={detailsController.data?.tags ?? []}
+					entityType='items'
+				/>
+			}
 		/>
 	)
 }

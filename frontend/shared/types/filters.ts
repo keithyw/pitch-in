@@ -1,3 +1,11 @@
+const OPERATORS = ['>', '<', '<=', '>=', '~=']
+
+export interface FilterField {
+	field: string
+	operator?: (typeof OPERATORS)[number]
+	value: string
+}
+
 export type FilterParams = Record<string, string | number | boolean | undefined>
 export interface FilterOption {
 	key: string
@@ -10,6 +18,7 @@ export interface FetchParams {
 	searchTerm?: string
 	ordering?: string
 	filters?: FilterParams
+	fields?: FilterField[]
 }
 
 export interface PaginationParams {
