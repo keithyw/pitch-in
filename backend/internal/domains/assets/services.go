@@ -12,11 +12,13 @@ import (
 )
 
 type AssetService interface {
+	AttachEntity(entityID, assetID int64, entity string) error
 	CountAssets(filter repository.Filter) (int64, error)
 	CreateAsset(asset Asset, reader io.Reader) (*Asset, error)
 	DeleteAsset(id int64) error
 	FindAssetBy(filter repository.Filter) ([]Asset, error)
 	GetAsset(id int64) (*Asset, error)
+	GetAssetsByEntity(entityID int64, entity string) ([]Asset, error)
 	UpdateAsset(asset Asset, reader io.Reader) (*Asset, error)
 }
 
@@ -32,6 +34,15 @@ func NewAssetService(repo AssetRepository, client storage.StorageClient, log *sl
 		client: client,
 		log: log,
 	}
+}
+
+func (s *assetServiceImpl) AttachEntity(entityID, assetID int64, entity string) error {
+	err := s.repository.AttachEntity(entityID, assetID, entity)
+	if err != nil {
+		s.log.Error("Failed attaching entity", "entityID", entityID, "assetID", assetID, "entity", entity, "error", err)
+		return fmt.Errorf("attach entity failure: %w", err)
+	}
+	return nil
 }
 
 func (s *assetServiceImpl) CountAssets(filter repository.Filter) (int64, error) {
@@ -93,6 +104,15 @@ func (s *assetServiceImpl) DeleteAsset(id int64) error {
 	return nil
 }
 
+func (s *assetServiceImpl) DetachEntity(entityID, assetID int64, entity string) error {
+	err := s.repository.DetachEntity(entityID, assetID, entity)
+	if err != nil {
+		s.log.Error("Failed detaching entity", "error", err)
+		return fmt.Errorf("detach entity failure: %w", err)
+	}
+	return nil
+}
+
 func (s *assetServiceImpl) FindAssetBy(filter repository.Filter) ([]Asset, error) {
 	assets, err := s.repository.FindAssetBy(filter)
 	if err != nil {
@@ -125,6 +145,23 @@ func (s *assetServiceImpl) GetAsset(id int64) (*Asset, error) {
 
 	asset.URL = &resp.URL
 	return asset, nil
+}
+
+func (s *assetServiceImpl) GetAssetsByEntity(entityID int64, entity string) ([]Asset, error) {
+	assets, err := s.repository.GetAssetsByEntity(entityID, entity)
+	if err != nil {
+		s.log.Error("Failed getting assets by entity", "entityID", entityID, "entity", entity, "error", err)
+		return nil, fmt.Errorf("get assets by entity error: %w", err)
+	}
+	for i := range assets {
+		resp, err := s.client.Get(*assets[i].ObjectKey)
+		if err != nil {
+			s.log.Error("Could not find asset", "key", assets[i].ObjectKey, "error", err)
+			return nil, err
+		}
+		assets[i].URL = &resp.URL
+	}
+	return assets, nil
 }
 
 func (s *assetServiceImpl) UpdateAsset(asset Asset, reader io.Reader) (*Asset, error) {
