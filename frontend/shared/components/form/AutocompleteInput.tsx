@@ -29,6 +29,8 @@ interface AutocompleteInputProps extends Omit<
 	 * Debounce time in milliseconds. Defaults to 300.
 	 */
 	debounceTime?: number
+
+	disabled?: boolean
 	/**
 	 * Minimum characters required to trigger search. Defaults to 2.
 	 */
@@ -52,6 +54,7 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
 	onSelect,
 	initialDisplayValue = '',
 	debounceTime = 300,
+	disabled,
 	minChars = 2,
 	noResultsMessage = 'No results found',
 	resetTriggger,
@@ -170,6 +173,7 @@ export const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
 				onChange={handleInputChange}
 				onKeyDown={handleKeyDown}
 				autoComplete='off'
+				disabled={disabled}
 				className={errorMessage ? 'border-red-500' : ''}
 				{...props}
 			/>

@@ -36,6 +36,7 @@ const EntityTagDrawer = <T extends Entity>({
 	const [addedItemTags, setAddedItemTags] = useState<Tag[]>([])
 	const [searchTags, setSearchTags] = useState<Tag[]>([])
 	const [resetKey, setResetkey] = useState(0)
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
 	useEffect(() => {
 		if (!item || isLoading) return
@@ -64,7 +65,10 @@ const EntityTagDrawer = <T extends Entity>({
 		val: string | number | null,
 		textValue?: string,
 	) => {
+		if (isSubmitting) return
+		setIsSubmitting(true)
 		let addTag: Tag | undefined
+
 		try {
 			if (val) {
 				await TagAPI.attach(val as number, item.id, entityType)
@@ -83,6 +87,8 @@ const EntityTagDrawer = <T extends Entity>({
 			}
 		} catch (e: unknown) {
 			console.error(e)
+		} finally {
+			setIsSubmitting(false)
 		}
 	}
 
@@ -114,6 +120,7 @@ const EntityTagDrawer = <T extends Entity>({
 				onSearch={(q) => handleSearch(q)}
 				onSelect={(v, text) => handleSelect(v, text)}
 				resetTriggger={resetKey}
+				disabled={isSubmitting}
 			/>
 			<ChipContainer
 				itemName='tags'
