@@ -6,12 +6,13 @@ import {
 	Button,
 	DetailsLayout,
 	DetailSectionRow,
+	TagList,
 } from '@pitch-in/shared/components'
 import { CONTENT_READ, CONTENT_WRITE } from '@pitch-in/shared/constants'
 import { useDetailsController } from '@pitch-in/shared'
 import { Item } from '@pitch-in/shared/types'
 import { failedLoadingError } from '@pitch-in/shared/utils'
-import { ITEMS_URL } from '@/lib/constants'
+import { ITEMS_URL, TAGS_URL } from '@/lib/constants'
 import { ItemAPI } from '@/lib/clients/api'
 import EntityTagDrawer from '@/components/ui/drawers/EntityTagDrawer'
 
@@ -78,9 +79,22 @@ const ItemDetailsPage = () => {
 					item={detailsController.data as Item}
 					itemTags={detailsController.data?.tags ?? []}
 					entityType='items'
+					onTagsChange={(newTags) =>
+						detailsController.setData({
+							...detailsController.data,
+							tags: newTags,
+						} as Item)
+					}
 				/>
 			}
-		/>
+		>
+			<div className='space-y-4'>
+				<TagList
+					tags={(detailsController.data as Item)?.tags}
+					tagUrl={TAGS_URL}
+				/>
+			</div>
+		</DetailsLayout>
 	)
 }
 

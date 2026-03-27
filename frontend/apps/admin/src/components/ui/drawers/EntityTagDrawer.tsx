@@ -21,12 +21,14 @@ interface EntityTagDrawerProps<T extends Entity> {
 	itemTags: Tag[]
 	entityType: 'items' // will expand later
 	onClose: () => void
+	onTagsChange: (updatedTags: Tag[]) => void
 }
 
 const EntityTagDrawer = <T extends Entity>({
 	isLoading,
 	isOpen,
 	onClose,
+	onTagsChange,
 	item,
 	itemTags,
 	entityType,
@@ -74,7 +76,9 @@ const EntityTagDrawer = <T extends Entity>({
 			}
 
 			if (addTag) {
-				setAddedItemTags((prev) => [...prev, addTag!])
+				const newTagsList = [...addedItemTags, addTag]
+				setAddedItemTags(newTagsList)
+				onTagsChange(newTagsList)
 				setResetkey((prev) => prev + 1)
 			}
 		} catch (e: unknown) {
@@ -85,9 +89,11 @@ const EntityTagDrawer = <T extends Entity>({
 	const handleRemove = async (t: Tag) => {
 		try {
 			await TagAPI.detach(t.id, item.id, entityType)
-			setAddedItemTags((prev) =>
-				prev.filter((existingTag) => existingTag.id !== t.id),
+			const newTagList = addedItemTags.filter(
+				(existingTag) => existingTag.id !== t.id,
 			)
+			setAddedItemTags(newTagList)
+			onTagsChange(newTagList)
 		} catch (e: unknown) {
 			console.error(e)
 		}
