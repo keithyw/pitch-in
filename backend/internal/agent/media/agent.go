@@ -79,9 +79,9 @@ func (c *CastResearchAgent) Handle(output string) (*command.CommandResults, erro
 // func (c *BaseAgentCommand) PreProcess() error {
 func (c *CastResearchAgent) PreProcess() error {
 	c.Log.Info("setting prompt data")	
-	c.PromptData["medium_type"] = "TV Show"
-	c.PromptData["title"] = "Miami Vice"
-	c.PromptData["year"] = 1987	
+	c.PromptData["medium_type"] = c.Params.GetValue("medium_type", "")
+	c.PromptData["title"] = c.Params.GetValue("title", "")
+	c.PromptData["year"] = c.Params.GetValue("year", "")	
 	c.Log.Info("prompt title", "title", c.PromptData["title"])
 	return nil
 }

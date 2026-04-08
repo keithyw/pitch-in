@@ -11,7 +11,7 @@ import (
 )
 
 type MediaService interface {
-	QueryShow(ctx context.Context) (map[string]any, error)
+	QueryShow(ctx context.Context, data map[string]any) (map[string]any, error)
 }
 
 type mediaServiceImpl struct {
@@ -26,11 +26,10 @@ func NewMediaService(manager templating.TemplateManager, log *slog.Logger) Media
 	}
 }
 
-func (s *mediaServiceImpl) QueryShow(ctx context.Context) (map[string]any, error) {
-	params := agent.NewAgentCommandParameters("media query agent", "asks about a shows cast", "show-user", nil)	
+func (s *mediaServiceImpl) QueryShow(ctx context.Context, data map[string]any) (map[string]any, error) {
 	cfg := agent.AgentCommandConfig{
 		Ctx: ctx,
-		Params: params,
+		Params: media.NewMediaAgentParameters("media-query-agent", "asks about a shows cast", "show-user", data),
 		TemplateManager: s.manager,
 		Log: s.log,
 	}

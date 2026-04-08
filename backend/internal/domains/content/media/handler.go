@@ -20,7 +20,12 @@ func NewMediaHandler(svc MediaService,log *slog.Logger) *MediaHandler {
 }
 
 func (h *MediaHandler) Get(w http.ResponseWriter, req *http.Request) {
-	res, err := h.svc.QueryShow(req.Context())
+	params := req.URL.Query()
+	data := make(map[string]any)
+	for k, v := range params {
+		data[k] = v[0]
+	}
+	res, err := h.svc.QueryShow(req.Context(), data)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusInternalServerError, err.Error())
 		return
