@@ -29,7 +29,7 @@ func NewMediaService(manager templating.TemplateManager, log *slog.Logger) Media
 func (s *mediaServiceImpl) QueryShow(ctx context.Context, data map[string]any) (map[string]any, error) {
 	cfg := agent.AgentCommandConfig{
 		Ctx: ctx,
-		Params: media.NewMediaAgentParameters("media-query-agent", "asks about a shows cast", "show-user", data),
+		Params: media.NewMediaAgentParameters("media-query-agent", "asks about a shows cast", "show-user", data, s.log),
 		TemplateManager: s.manager,
 		Log: s.log,
 	}

@@ -1,5 +1,7 @@
 package command
 
+import "fmt"
+
 type CommandParameterInterface interface {
 	GetValue(key string, defaultValue any) any
 	SetValue(key string, val any)
@@ -8,6 +10,7 @@ type CommandParameterInterface interface {
 
 type BaseParameters struct {
 	Data map[string]any
+	Impl CommandParameterInterface
 }
 
 func (b *BaseParameters) GetValue(key string, defaultValue any) any {
@@ -22,5 +25,6 @@ func (b *BaseParameters) SetValue(key string, val any) {
 }
 
 func (b *BaseParameters) Validate() bool {
+	fmt.Print("big penis")
 	return true
 }
