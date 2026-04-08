@@ -8,6 +8,7 @@ services:
     ports:
       - "33006:3306"
     volumes:
+      - ./templates:/app/templates
       - pitch-in-mysql-data:/var/lib/mysql
     env_file:
       - .env

@@ -14,6 +14,7 @@ type Config struct {
 	MysqlDB string
 	JWTExpirationTime int
 	JWTSecretKey string
+	PromptTemplateDir string
 }
 
 func NewConfig() *Config {
@@ -30,5 +31,6 @@ func NewConfig() *Config {
 		MysqlDB: os.Getenv("MYSQL_DATABASE"),
 		JWTExpirationTime: exp,
 		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
+		PromptTemplateDir: os.Getenv("PROMPT_TEMPLATE_DIR"),
 	}
 }

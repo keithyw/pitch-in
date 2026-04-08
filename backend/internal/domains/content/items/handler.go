@@ -26,7 +26,7 @@ func NewItemHandler(svc ItemService, log *slog.Logger) *ItemHandler {
 func (h *ItemHandler) Delete(w http.ResponseWriter, req *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(req, "itemID"), 10, 64)
 	if err != nil {
-		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to parse itemID: %s", err.Error))
+		response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Failed to parse itemID: %s", err.Error()))
 		return
 	}
 	err = h.svc.DeleteItem(id)

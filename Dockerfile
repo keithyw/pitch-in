@@ -1,7 +1,6 @@
 FROM golang:1.25-alpine AS builder
 
 RUN apk add --no-cache git
-
 WORKDIR /app
 
 COPY backend/go.mod backend/go.sum ./backend/
@@ -10,14 +9,18 @@ RUN go mod download
 
 WORKDIR /app
 COPY . .
-
 WORKDIR /app/backend
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /api ./cmd/api/main.go
 
+
 FROM alpine:3.19
 RUN apk --no-cache add ca-certificates tzdata
-WORKDIR /root/
+
+WORKDIR /app
 COPY --from=builder /api .
+COPY backend/internal/templates ./templates
+ENV TEMPLATE_DIR=/app/templates
+
 
 EXPOSE 8080
 CMD ["./api"]

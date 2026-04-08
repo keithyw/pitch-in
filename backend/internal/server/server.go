@@ -9,6 +9,7 @@ import (
 	"github.com/keithyw/pitch-in/internal/database"
 	"github.com/keithyw/pitch-in/internal/domains/assets"
 	"github.com/keithyw/pitch-in/internal/domains/content/items"
+	"github.com/keithyw/pitch-in/internal/domains/content/media"
 	"github.com/keithyw/pitch-in/internal/domains/identity/auth"
 	"github.com/keithyw/pitch-in/internal/domains/identity/permissions"
 	"github.com/keithyw/pitch-in/internal/domains/identity/roles"
@@ -18,12 +19,15 @@ import (
 	"github.com/keithyw/pitch-in/pkg/jwt"
 	"github.com/keithyw/pitch-in/pkg/middleware"
 	"github.com/keithyw/pitch-in/pkg/storage"
+	"github.com/keithyw/pitch-in/pkg/templating"
 )
 
 func NewServer(cfg *config.Config, store database.DBStore, client storage.StorageClient, log *slog.Logger) http.Handler {
 	jwtService := jwt.NewJWTService(cfg.JWTSecretKey, cfg.JWTExpirationTime, log)
 	middlewareService := mid.NewMiddlewareService(mid.NewMiddlewareRepository(store), log)
 	authorization := mid.NewAuthorizationMiddleware(middlewareService)
+	manager := templating.NewTemplateManager(cfg.PromptTemplateDir)
+
 	r := chi.NewRouter()
 	r.Use(middleware.Cors)
 	r.Mount("/auth", auth.Initialize(store, jwtService, log))
@@ -33,6 +37,7 @@ func NewServer(cfg *config.Config, store database.DBStore, client storage.Storag
 	r.Mount("/roles", roles.Initialize(store, jwtService, authorization, log))
 	r.Mount("/tags", tags.Initialize(store, jwtService, authorization, log))
 	r.Mount("/users", users.Initialize(store, jwtService, authorization, log))
+	r.Mount("/media", media.Initialize(store, jwtService, *manager, authorization, log))
 
 	return r
 

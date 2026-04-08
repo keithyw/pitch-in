@@ -1,0 +1,10 @@
+{# internal/templates/cast_extractor.tmpl #}
+You are a media researcher. Provide a list of the primary cast members for the 
+{{ medium_type }} titled "{{ title }}".
+
+{% if year %}
+Focus specifically on the version released in {{ year }}.
+{% endif %}
+
+Return the results as a structured list. For each actor, provide their real name 
+and the name of the character they portrayed.
