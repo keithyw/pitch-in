@@ -1,6 +1,8 @@
 package media
 
 import (
+	"fmt"
+
 	"github.com/keithyw/pitch-in/pkg/agent"
 	"github.com/keithyw/pitch-in/pkg/command"
 	"google.golang.org/genai"
@@ -35,7 +37,12 @@ func (c *CastResearchAgent) GenerateSessionKey() string {
 }
 
 func (c *CastResearchAgent) GetInputContent() *genai.Content {
-	return genai.NewContentFromText("Generate cast information for a given movie", genai.RoleUser)
+	mediumType := c.Params.GetValue("medium_type", "")
+	title := c.Params.GetValue("title", "")
+	year := c.Params.GetValue("year", "")
+
+	msg := fmt.Sprintf("Perform the research for the %s '%s' (%d) now.", mediumType, title, year)
+	return genai.NewContentFromText(msg, genai.RoleUser)
 }
 
 func (c *CastResearchAgent) GetOutputSchema() *genai.Schema {
@@ -76,7 +83,6 @@ func (c *CastResearchAgent) Handle(output string) (*command.CommandResults, erro
 	}, nil	
 }
 
-// func (c *BaseAgentCommand) PreProcess() error {
 func (c *CastResearchAgent) PreProcess() error {
 	c.Log.Info("setting prompt data")	
 	c.PromptData["medium_type"] = c.Params.GetValue("medium_type", "")

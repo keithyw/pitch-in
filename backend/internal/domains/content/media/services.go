@@ -8,6 +8,7 @@ import (
 	"github.com/keithyw/pitch-in/internal/agent/media"
 	"github.com/keithyw/pitch-in/pkg/agent"
 	"github.com/keithyw/pitch-in/pkg/templating"
+	"google.golang.org/adk/tool"
 )
 
 type MediaService interface {
@@ -27,11 +28,25 @@ func NewMediaService(manager templating.TemplateManager, log *slog.Logger) Media
 }
 
 func (s *mediaServiceImpl) QueryShow(ctx context.Context, data map[string]any) (map[string]any, error) {
+	// factory := agenttool.NewAgentToolManager(ctx, s.manager)
+	// searchTool := mytool.NewSearchTool(factory)
+	// googleSearch, err := searchTool.CreateSearchTool()
+	// if err != nil {
+	// 	s.log.Error("Failed to create search tool", "error", err)
+	// 	return nil, err
+	// }
+
+	// lazy
+	description := "Expert researcher that uses Google Search to find and validate cast lists for movies and TV shows."
 	cfg := agent.AgentCommandConfig{
 		Ctx: ctx,
-		Params: media.NewMediaAgentParameters("media-query-agent", "asks about a shows cast", "show-user", data, s.log),
+		Params: media.NewMediaAgentParameters("media-query-agent", description, "show-user", data, s.log),
 		TemplateManager: s.manager,
 		Log: s.log,
+		Tools: []tool.Tool{
+			// geminitool.GoogleSearch{},
+			// googleSearch,
+		},
 	}
 	agt := media.NewCastResearchAgent(cfg)
 	res := agt.Execute()

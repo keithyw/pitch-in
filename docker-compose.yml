@@ -29,6 +29,14 @@ services:
       - ./minio_data:/data
       - ./minio.license:/minio.license
     command: server /data --console-address ":9001"
+  ollama-service:
+    image: ollama/ollama:latest
+    container_name: ollama-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: always
 
   pitch-in-api-service:
     build:
@@ -40,6 +48,8 @@ services:
         condition: service_healthy
       pitch-in-minio:
         condition: service_started
+      ollama-service:
+        condition: service_started
     ports:
       - "8080:8080"
     env_file:
@@ -48,3 +58,4 @@ services:
 
 volumes:
   pitch-in-mysql-data:
+  ollama-models:

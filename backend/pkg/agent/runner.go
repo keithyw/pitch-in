@@ -71,6 +71,11 @@ func (r *RunnerService) RegisterTool(t tool.Tool) {
 }
 
 func (r *RunnerService) handleToolCall(call *genai.FunctionCall) (map[string]any, error) {
+	if call.Name == "set_model_response" {
+		r.log.Info("Handling protocol tool", "tool", call.Name)
+		return call.Args, nil
+	}
+	
 	t, ok := r.tools[call.Name]
 	if !ok {
 		r.log.Error("Tool not registered", "tool", call.Name)
@@ -79,8 +84,10 @@ func (r *RunnerService) handleToolCall(call *genai.FunctionCall) (map[string]any
 
 	runnable, ok := t.(Runnable)
 	if !ok {
-		r.log.Error("Tool is not executable", "tool", call.Name)
-		return nil, fmt.Errorf("tool %s is not executable", call.Name)
+		// r.log.Error("Tool is not executable", "tool", call.Name)
+		r.log.Info("Native tool call")
+		// return nil, fmt.Errorf("tool %s is not executable", call.Name)
+		return map[string]any{"status": "native_call_acknowledged"}, nil
 	}
 
 	return runnable.Run(r.ctx, call.Args)
@@ -126,6 +133,7 @@ func (r *RunnerService) Run(message *genai.Content) (string, error) {
 					}
 
 					if res == nil {
+						r.log.Error("No response from tool call yet")
 						continue
 					}
 
@@ -141,6 +149,7 @@ func (r *RunnerService) Run(message *genai.Content) (string, error) {
 		}
 
 		if len(toolResponses) > 0 {
+			r.log.Info("received tool response", "response", toolResponses)
 			msg = &genai.Content{
 				Role: "tool",
 				Parts: toolResponses,

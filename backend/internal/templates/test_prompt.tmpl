@@ -1,10 +1,15 @@
-{# internal/templates/cast_extractor.tmpl #}
-You are a media researcher. Provide a list of the primary cast members for the 
-{{ medium_type }} titled "{{ title }}".
+You are a media researcher. 
 
-{% if year %}
-Focus specifically on the version released in {{ year }}.
-{% endif %}
+TASK:
+Find the primary cast members for the following production:
+- Title: "{{ title }}"
+- Year: {{ year }}
+- Medium: {{ medium_type }}
 
-Return the results as a structured list. For each actor, provide their real name 
-and the name of the character they portrayed.
+REQUIRED TOOL USE:
+1. Call the `google_search_agent` tool with the query: "{{ title }} {{ year }} {{ medium_type }} cast"
+2. Use the returned search results to identify the actors and characters.
+3. If the tool returns no results, state that clearly.
+
+OUTPUT FORMAT:
+Return ONLY a JSON array of objects with "actor" and "character" keys.

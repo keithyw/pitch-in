@@ -19,7 +19,7 @@ type AgentCommandConfig struct {
 	Ctx context.Context
 	Params AgentCommandParametersInterface	
 	Tools []tool.Tool	
-	ArtifactService *artifact.Service
+	ArtifactService artifact.Service
 	DisableTransfer *bool
 	TemplateManager templating.TemplateManager
 	Log *slog.Logger
@@ -33,6 +33,7 @@ type AgentCommandInterface interface {
 	PreProcess() error
 	PostProcess() error
 	Execute() command.CommandResults
+	ArtifactSetup() error
 }
 
 type BaseAgentCommand struct {
@@ -47,7 +48,7 @@ type BaseAgentCommand struct {
 	Tools []tool.Tool
 	InternalData map[string]any
 	Results *command.CommandResults
-	ArtifactService *artifact.Service
+	ArtifactService artifact.Service
 	PromptTemplateManager templating.TemplateManager
 	DisableTransfer *bool
 	Log *slog.Logger
@@ -60,7 +61,7 @@ func (c *BaseAgentCommand) GenerateSessionKey() string {
 
 func (c *BaseAgentCommand) generateAgent() error {
 	config := NewAgentConfig()
-	model, err := NewAgentModel(c.Ctx, config, c.Log)
+	model, err := NewAgentModel(c.Ctx, config)
 	if err != nil {
 		c.Log.Error("failed to create agent model", "error", err)
 		return err
@@ -120,8 +121,9 @@ func (c *BaseAgentCommand) generateRunner() error {
 		SessionManager: *c.SessionManager,
 		Log: c.Log,
 	}
-	if c.ArtifactService != nil {
-		config.ArtifactService = *c.ArtifactService
+	if c.ArtifactService != nil {		
+		c.ArtifactSetup()
+		config.ArtifactService = c.ArtifactService
 	}
 
 	runner, err := NewRunnerService(
@@ -132,10 +134,13 @@ func (c *BaseAgentCommand) generateRunner() error {
 		c.Log.Error("Failed instantiating new runner service", "error", err)
 		return err
 	}
-	c.Runner = runner
+	
 	for _, t := range c.Tools {
+		c.Log.Info("Registering tool", "tool", t.Name())
 		runner.RegisterTool(t)
 	}
+
+	c.Runner = runner
 	
 	return nil
 }
@@ -247,4 +252,8 @@ func (c *BaseAgentCommand) Execute() command.CommandResults {
 	}
 
 	return *c.Results
+}
+
+func (c *BaseAgentCommand) ArtifactSetup() error {
+	return nil
 }
