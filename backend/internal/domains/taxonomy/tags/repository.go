@@ -14,6 +14,7 @@ type TagRepository interface {
 	DeleteTag(id int64) error
 	DetachEntity(entityID, tagID int64, entity string) error
 	FindTagsBy(filter repository.Filter) ([]Tag, error)
+	GetIDsByTags(tags []Tag) (map[string]int64, error)
 	GetTag(id int64) (*Tag, error)
 	GetTagsByEntity(entityID int64, entity string) ([]Tag, error)
 	UpdateTag(tag Tag) (*Tag, error)
@@ -73,6 +74,41 @@ func (t *tagRepositoryImpl) FindTagsBy(filter repository.Filter) ([]Tag, error) 
 		return nil, err
 	}
 	return tags, nil
+}
+
+func (t *tagRepositoryImpl) GetIDsByTags(tags []Tag) (map[string]int64, error) {
+	if len(tags) == 0 {
+		return nil, nil
+	}
+
+	tagMap := make(map[string]int64)
+
+	tagStr := make([]string, len(tags))
+	for i, tag := range tags {
+		tagStr[i] = *tag.Tag
+	}
+
+	builder := sq.Select("id", "tag").
+		From("tags").
+		Where(sq.Eq{"tag": tagStr}).
+		PlaceholderFormat(sq.Question)
+
+	rows, err := t.store.GetClient().QueryMany(builder)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int64
+		var tag string
+		if err := rows.Scan(&id, &tag); err != nil {
+			return nil, err
+		}
+		tagMap[tag] = id
+	}
+
+	return tagMap, nil
 }
 
 func (t *tagRepositoryImpl) GetTag(id int64) (*Tag, error) {

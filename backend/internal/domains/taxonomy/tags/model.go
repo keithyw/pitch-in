@@ -3,7 +3,7 @@ package tags
 import "github.com/keithyw/pitch-in/pkg/model"
 
 type TagFields struct {
-	Tag *string `json:"tag,omitempty" db:"tag" validate:"omitempty,max=255"`
+	Tag *string `schema:"tag" json:"tag,omitempty" db:"tag" validate:"omitempty,max=255"`
 	Slug *string `json:"slug,omitempty" db:"slug" validate:"omitempty,max=255"`
 }
 

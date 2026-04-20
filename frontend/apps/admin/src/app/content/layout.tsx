@@ -1,11 +1,16 @@
 import { CrudLayout, SubnavBarLink } from '@pitch-in/shared/components'
 import { CONTENT_WRITE } from '@pitch-in/shared/constants'
-import { CONTENT_URL, ITEMS_URL } from '@/lib/constants'
+import { CONTENT_URL, IDENTIFIER_URL, ITEMS_URL } from '@/lib/constants'
 
 const ContentLayout = ({
 	children,
 }: Readonly<{ children: React.ReactNode }>) => {
 	const links: SubnavBarLink[] = [
+		{
+			href: IDENTIFIER_URL,
+			label: 'Identifier',
+			permission: CONTENT_WRITE,
+		},
 		{
 			href: ITEMS_URL,
 			label: 'Items',

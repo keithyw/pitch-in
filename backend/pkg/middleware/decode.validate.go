@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -19,7 +20,7 @@ func DecodeAndValidate[T any](next func(http.ResponseWriter, *http.Request, T)) 
 	return func (w http.ResponseWriter, r *http.Request) {
 		var payload T
 		if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-			response.ErrorJSON(w, http.StatusBadRequest, "Malformed request")
+			response.ErrorJSON(w, http.StatusBadRequest, fmt.Sprintf("Malformed request: %s", err.Error()))
 			return
 		}
 		defer r.Body.Close()

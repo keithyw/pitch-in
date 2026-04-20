@@ -43,12 +43,12 @@ func (s *itemServiceImpl) CountItems(filter repository.Filter) (int64, error) {
 func (s *itemServiceImpl) CreateItem(item Item) (*Item, error) {
 	slug := slug.Make(*item.Name)
 	item.Slug = &slug
-	newTag, err := s.repository.CreateItem(item)
+	newItem, err := s.repository.CreateItem(item)
 	if err != nil {
 		s.log.Error("Failed creating new item", "item", item.Name, "error", err)
 		return nil, err
 	}
-	return newTag, nil
+	return newItem, nil
 }
 
 func (s *itemServiceImpl) DeleteItem(id int64) error {

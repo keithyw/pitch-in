@@ -16,6 +16,7 @@ type TagService interface {
 	DetachEntity(entityID, tagID int64, entity string) error
 	FindTagsBy (filter repository.Filter) ([]Tag, error)
 	GetTag (id int64) (*Tag, error)
+	GetIDsByTags(tags []Tag) (map[string]int64, error)
 	GetTagsByEntity(entityID int64, entity string) ([]Tag, error)
 	UpdateTag (tag Tag) (*Tag, error)
 }
@@ -95,6 +96,15 @@ func (s *tagServiceImpl) GetTag(id int64) (*Tag, error) {
 		return nil, fmt.Errorf("get tag error: %w", err)
 	}
 	return tag, nil
+}
+
+func (s *tagServiceImpl) GetIDsByTags(tags []Tag) (map[string]int64, error) {
+	tagMap, err := s.repository.GetIDsByTags(tags)
+	if err != nil {
+		s.log.Error("Failed getting tag IDs", "error", err)
+		return nil, fmt.Errorf("get tag IDs error: %w", err)
+	}
+	return tagMap, nil
 }
 
 func (s *tagServiceImpl) GetTagsByEntity(entityID int64, entity string) ([]Tag, error) {

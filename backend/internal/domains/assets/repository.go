@@ -36,7 +36,7 @@ func (r *assetRepositoryImpl) AttachEntity(entityID, assetID int64, entity strin
 		"entity": entity,
 	}
 
-	builder := sq.Insert("entity_assets").SetMap(data).PlaceholderFormat(sq.Question)
+	builder := sq.Insert("asset_entities").SetMap(data).PlaceholderFormat(sq.Question)
 	_, err := r.store.GetClient().Exec(r.store.GetContext(), builder)
 	return err
 }
@@ -60,7 +60,7 @@ func (r *assetRepositoryImpl) DeleteAsset(id int64) error {
 }
 
 func (r *assetRepositoryImpl) DetachEntity(entityID, assetID int64, entity string) error {
-	q := sq.Delete("entity_assets").
+	q := sq.Delete("asset_entities").
 		Where(sq.Eq{"entity_id": entityID, "asset_id": assetID, "entity": entity}).
 		PlaceholderFormat(sq.Question)
 	_, err := r.store.GetClient().Exec(r.store.GetContext(), q)
@@ -89,7 +89,7 @@ func (r *assetRepositoryImpl) GetAssetsByEntity(entityID int64, entity string) (
 	var assets []Asset
 	builder := sq.Select("a.id as id, a.object_key as object_key, a.mime_type as mime_type, a.size_bytes as size_bytes, a.width as width, a.height as height").
 		From("assets a").
-		Join("entity_assets ea ON a.id = ea.asset_id").
+		Join("asset_entities ea ON a.id = ea.asset_id").
 		Where(sq.Eq{"ea.entity_id": entityID, "ea.entity": entity}).
 		PlaceholderFormat(sq.Question)
 	rows, err := r.store.GetClient().QueryMany(builder)

@@ -6,15 +6,15 @@ import (
 )
 
 type ItemFields struct {
-	Name *string `json:"name,omitempty" db:"name" validate:"omitempty,max=255"`
+	Name *string `schema:"name" json:"name,omitempty" db:"name" validate:"omitempty,max=255"`
 	Slug *string `json:"slug,omitempty" db:"slug" validate:"omitempty,max=255"`
-	Description *string `json:"description,omitempty" db:"description" validate:"omitempty"`
+	Description *string `schema:"description" json:"description,omitempty" db:"description" validate:"omitempty"`
 }
 
 type Item struct{
 	model.BaseModel
 	ItemFields
-	Tags []tags.Tag `json:"tags"`
+	Tags []tags.Tag `schema:"tags" json:"tags"`
 }
 
 type PatchItemRequest struct {
