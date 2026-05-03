@@ -3,6 +3,7 @@ package ingestion
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/keithyw/pitch-in/internal/domains/assets"
 	"github.com/keithyw/pitch-in/internal/domains/content/items"
@@ -33,6 +34,12 @@ func NewIngestionHandler(assetService assets.AssetService, itemService items.Ite
 }
 
 func (h *IngestionHandler) Post(w http.ResponseWriter, req *http.Request) {
+	userID, ok := req.Context().Value("UserID").(int64)
+	if !ok {
+		response.ErrorJSON(w, http.StatusUnauthorized, "Invalid user ID")
+		return
+	}
+
 	err := req.ParseMultipartForm(10 << 20)
 	if err != nil {
 		response.ErrorJSON(w, http.StatusBadRequest, "Invalid form data")
@@ -79,6 +86,7 @@ func (h *IngestionHandler) Post(w http.ResponseWriter, req *http.Request) {
 			Name: &item.Name,
 			Description: &item.Description,
 		},
+		UserID: &userID,
 		Tags: newTags,
 	}
 
@@ -114,8 +122,9 @@ func (h *IngestionHandler) Post(w http.ResponseWriter, req *http.Request) {
 
 	var tagsToCreate []string
 	for _, tagName := range itemReq.Tags {
-		if _,exists := tagMap[*tagName.Tag]; !exists {
-			tagsToCreate = append(tagsToCreate, *tagName.Tag)
+		lowerTagName := strings.ToLower(*tagName.Tag)
+		if _,exists := tagMap[lowerTagName]; !exists {
+			tagsToCreate = append(tagsToCreate, lowerTagName)
 		}
 	}
 

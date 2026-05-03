@@ -32,7 +32,9 @@ func AuthMiddleware(s *jwt.JWTService) func(http.Handler)  http.Handler {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), ClaimsKey, claims)
+			ctx := r.Context()
+			ctx = context.WithValue(ctx, ClaimsKey, claims)
+			ctx = context.WithValue(ctx, "UserID", claims.UserID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}

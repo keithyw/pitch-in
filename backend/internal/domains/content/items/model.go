@@ -14,6 +14,7 @@ type ItemFields struct {
 type Item struct{
 	model.BaseModel
 	ItemFields
+	UserID *int64 `json:"user_id,omitempty" db:"user_id"`
 	Tags []tags.Tag `schema:"tags" json:"tags"`
 }
 
@@ -26,7 +27,7 @@ func (m *Item) TableName() string {
 }
 
 func (m *Item) Columns() []string {
-	return []string{"id", "name", "slug", "description", "created_at", "updated_at", "deleted_at"}
+	return []string{"id", "name", "slug", "description", "created_at", "updated_at", "deleted_at", "user_id"}
 }
 
 func (m *Item) ToMap() map[string]interface{} {
@@ -34,6 +35,7 @@ func (m *Item) ToMap() map[string]interface{} {
 		"name": m.Name,
 		"slug": m.Slug,
 		"description": m.Description,
+		"user_id": m.UserID,
 	}
 	return model.MapValues(fields)
 }

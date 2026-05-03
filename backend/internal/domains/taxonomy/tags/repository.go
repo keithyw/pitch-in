@@ -1,6 +1,8 @@
 package tags
 
 import (
+	"strings"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/keithyw/pitch-in/internal/database"
 	"github.com/keithyw/pitch-in/pkg/model"
@@ -85,12 +87,12 @@ func (t *tagRepositoryImpl) GetIDsByTags(tags []Tag) (map[string]int64, error) {
 
 	tagStr := make([]string, len(tags))
 	for i, tag := range tags {
-		tagStr[i] = *tag.Tag
+		tagStr[i] = strings.ToLower(*tag.Tag)
 	}
 
 	builder := sq.Select("id", "tag").
 		From("tags").
-		Where(sq.Eq{"tag": tagStr}).
+		Where(sq.Eq{"LOWER(tag)": tagStr}).
 		PlaceholderFormat(sq.Question)
 
 	rows, err := t.store.GetClient().QueryMany(builder)
@@ -105,7 +107,7 @@ func (t *tagRepositoryImpl) GetIDsByTags(tags []Tag) (map[string]int64, error) {
 		if err := rows.Scan(&id, &tag); err != nil {
 			return nil, err
 		}
-		tagMap[tag] = id
+		tagMap[strings.ToLower(tag)] = id
 	}
 
 	return tagMap, nil
